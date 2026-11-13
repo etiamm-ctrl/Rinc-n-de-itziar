@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>English Quest</title>
+<style>
+:root{--bg:#eef2ff;--card:#fff;--ink:#23305a;--sub:#5b6794;--line:#d3daf5;--ok:#1f9d6b;--okbg:#d6f5e6;--bad:#d9443b;--badbg:#fde0dd;--c1:#ff7a59;--c2:#3b82f6;--c4:#7c4dff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171c33;--card:#232a4a;--ink:#f3f1ff;--sub:#aab2da;--line:#3a4370;--okbg:#17432f;--badbg:#4a2230;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171c33;--card:#232a4a;--ink:#f3f1ff;--sub:#aab2da;--line:#3a4370;--okbg:#17432f;--badbg:#4a2230;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;line-height:1.35;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:2rem;margin:8px 0 4px}
+.lead{margin:0 0 16px;color:var(--sub);font-size:1.1rem}
+button{font:inherit;color:inherit}
+.big{border:0;border-radius:20px;padding:18px;font-weight:700;font-size:1.3rem;color:#fff;background:linear-gradient(90deg,var(--c2),var(--c4));width:100%;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.info{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin:18px 0;color:var(--sub)}
+.bar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.back{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:6px 12px;cursor:pointer}
+.track{flex:1;height:14px;background:var(--line);border-radius:9px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--ok);transition:width .3s}
+.mascot{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fox{font-size:3rem}
+.fox.hop{animation:hop .5s}
+.bubble{flex:1;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:8px 12px;font-weight:600}
+.streak{font-weight:700;color:var(--c1);white-space:nowrap}
+.qcard{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:22px 16px;text-align:center;font-size:1.45rem;font-weight:600;min-height:110px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px}
+.spk{border:0;border-radius:50%;width:84px;height:84px;font-size:2.4rem;background:var(--c2);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.opt{border:3px solid var(--line);background:var(--card);border-radius:18px;padding:14px 8px;font-size:1.25rem;font-weight:600;cursor:pointer;min-height:62px}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.line{min-height:64px;border:3px dashed var(--line);border-radius:18px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;background:var(--card)}
+.pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:10px 14px;font-weight:600;font-size:1.2rem;cursor:pointer}
+.again{border:0;border-radius:18px;background:var(--c2);color:#fff;font-weight:700;font-size:1.2rem;padding:14px 26px;margin:6px;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.end{text-align:center;padding-top:20px}
+.stars{font-size:2.6rem;letter-spacing:4px;margin:10px 0}
+.pop{position:fixed;font-size:1.8rem;pointer-events:none;animation:fall 1.2s ease-out forwards;z-index:9}
+.shake{animation:shake .4s}
+@keyframes hop{30%{transform:translateY(-14px) rotate(-8deg)}60%{transform:translateY(0) rotate(8deg)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes fall{from{opacity:1}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.pop,.fox.hop,.shake{animation:none}}
+:focus-visible{outline:3px solid var(--c2);outline-offset:2px}
+[hidden]{display:none!important}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:6px 0}
+</style>
+</head>
+<body>
+<main>
+<section id="home">
+  <h1>Hello, Itziar! 🇬🇧</h1>
+  <p class="lead">Palabras, frases y escucha. ¡10 retos por partida!</p>
+  <button class="big" id="go">¡Empezar!</button>
+  <div class="info" id="best"></div>
+</section>
+<section id="quiz" hidden>
+  <div class="bar"><button class="back" id="back">Salir</button><div class="track"><div class="fill" id="fill"></div></div><b id="score">0 ⭐</b></div>
+  <div class="mascot"><div class="fox" id="fox">🦊</div><div class="bubble" id="bub">Good luck!</div><div class="streak" id="combo"></div></div>
+  <div class="qcard" id="q"></div>
+  <div class="opts" id="opts"></div>
+</section>
+<section id="end" class="end" hidden>
+  <div class="stars" id="stars"></div>
+  <h1 id="endtxt"></h1>
+  <p class="lead" id="endsub"></p>
+  <button class="again" id="again">Otra vez</button>
+</section>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)},R=function(n){return Math.floor(Math.random()*n)},shuf=function(a){return a.map(function(x){return[Math.random(),x]}).sort(function(a,b){return a[0]-b[0]}).map(function(x){return x[1]})};
+var V=[["perro","dog"],["gato","cat"],["caballo","horse"],["conejo","rabbit"],["pez","fish"],["pájaro","bird"],["vaca","cow"],["cerdo","pig"],["oveja","sheep"],["mono","monkey"],["manzana","apple"],["plátano","banana"],["leche","milk"],["pan","bread"],["queso","cheese"],["huevo","egg"],["agua","water"],["naranja","orange"],["madre","mother"],["padre","father"],["hermano","brother"],["hermana","sister"],["abuela","grandmother"],["abuelo","grandfather"],["cabeza","head"],["mano","hand"],["pie","foot"],["nariz","nose"],["ojo","eye"],["boca","mouth"],["camiseta","T-shirt"],["zapato","shoe"],["sombrero","hat"],["falda","skirt"],["lápiz","pencil"],["libro","book"],["mochila","backpack"],["profesora","teacher"],["ventana","window"],["puerta","door"],["silla","chair"],["mesa","table"],["casa","house"],["coche","car"],["sol","sun"],["luna","moon"],["lluvia","rain"],["nube","cloud"],["rojo","red"],["verde","green"],["azul","blue"],["amarillo","yellow"],["negro","black"],["blanco","white"],["rosa","pink"],["grande","big"],["pequeño","small"],["feliz","happy"],["triste","sad"],["rápido","fast"],["lento","slow"],["caliente","hot"],["frío","cold"],["once","eleven"],["doce","twelve"],["trece","thirteen"],["quince","fifteen"],["veinte","twenty"],["lunes","Monday"],["martes","Tuesday"],["miércoles","Wednesday"],["jueves","Thursday"],["viernes","Friday"],["sábado","Saturday"],["domingo","Sunday"]];
+if(window.NIVEL===1){V=V.slice(0,60).concat([["uno","one"],["dos","two"],["tres","three"],["cuatro","four"],["cinco","five"],["seis","six"],["siete","seven"],["ocho","eight"],["nueve","nine"],["diez","ten"]])}
+var PIC=[["🐶","dog"],["🐱","cat"],["🐟","fish"],["🐦","bird"],["🐄","cow"],["🐷","pig"],["🐑","sheep"],["🐒","monkey"],["🐴","horse"],["🐰","rabbit"],["🍎","apple"],["🍌","banana"],["🥛","milk"],["🍞","bread"],["🧀","cheese"],["🥚","egg"],["🍊","orange"],["☀️","sun"],["🌙","moon"],["☁️","cloud"],["🚗","car"],["🏠","house"],["📖","book"],["✏️","pencil"],["🎒","backpack"],["🪑","chair"],["🚪","door"],["👟","shoe"],["🎩","hat"],["👕","T-shirt"],["👃","nose"],["👁️","eye"],["✋","hand"],["🦶","foot"],["👄","mouth"]];
+var G1=[["Hello! My ___ is Ana.","name",["dog","red","book"]],["One, two, ___, four.","three",["five","ten","eight"]],["Good ___! (por la mañana)","morning",["night","bye","red"]],["Good ___! (antes de dormir)","night",["morning","hello","blue"]],["The sun is ___.","yellow",["blue","black","pink"]],["The sky is ___.","blue",["red","yellow","brown"]],["I ___ apples. 😋","like",["am","is","are"]],["A cat says ___.","miaow",["woof","moo","quack"]],["A dog says ___.","woof",["miaow","moo","quack"]],["How are you? I'm ___, thank you.","fine",["red","seven","cat"]],["Bye ___!","bye",["hello","one","yes"]],["Stand ___! (levántate)","up",["down","red","cat"]],["Sit ___! (siéntate)","down",["up","blue","dog"]]];
+var G=[["I ___ a cat.","have",["has","am","are"]],["She ___ my sister.","is",["are","am","have"]],["They ___ happy.","are",["is","am","be"]],["I ___ seven years old.","am",["is","are","have"]],["This is ___ apple.","an",["a","two","some"]],["I ___ water every day.","drink",["eat","read","wear"]],["I ___ a book.","read",["eat","drink","wear"]],["My name ___ Ana.","is",["are","am","be"]],["The dog ___ big.","is",["are","am","have"]],["We ___ at school.","are",["is","am","be"]],["The sun is ___.","hot",["cold","sad","slow"]],["I wear a ___ on my head.","hat",["shoe","skirt","glove"]],["A ___ has four wheels.","car",["fish","hat","egg"]],["Monday, Tuesday, ___, Thursday.","Wednesday",["Friday","Sunday","Saturday"]],["One, two, three, ___, five.","four",["six","seven","ten"]],["A fish can ___.","swim",["fly","read","walk"]],["A bird can ___.","fly",["swim","drive","read"]],["How ___ you?","are",["is","am","do"]],["What ___ your name?","is",["are","am","do"]],["I ___ breakfast in the morning.","eat",["wear","read","swim"]],["Good ___, sleep well!","night",["morning","afternoon","hello"]],["He ___ a red car.","has",["have","are","am"]],["I ___ a sandwich for lunch.","eat",["wear","fly","drive"]],["It is ___ today, take an umbrella.","raining",["sunny","hot","eating"]]];
+var S=[["Yo tengo un gato","I have a cat"],["Mi madre está feliz","My mother is happy"],["El gato está en la mesa","The cat is on the table"],["Ella tiene dos libros","She has two books"],["Nosotros jugamos en el parque","We play in the park"],["El sol está caliente","The sun is hot"],["Me gusta el pan","I like bread"],["Mi casa es grande","My house is big"],["Él bebe agua","He drinks water"],["El perro es pequeño","The dog is small"],["Yo veo una nube blanca","I see a white cloud"],["Mi hermano tiene un coche rojo","My brother has a red car"]];
+if(window.NIVEL!==1)V.push(["cumpleaños","birthday"],["regalo","present"],["globo","balloon"],["pastel","cake"],["helado","ice cream"],["patata","potato"],["tomate","tomato"],["fresa","strawberry"],["uva","grape"],["camisa","shirt"],["calcetín","sock"],["abrigo","coat"],["gorra","cap"],["bufanda","scarf"],["cocina","kitchen"],["dormitorio","bedroom"],["jardín","garden"],["baño","bathroom"]);
+if(window.NIVEL>=3){V.push(["verano","summer"],["invierno","winter"],["bosque","forest"],["médico","doctor"],["mar","sea"],["montaña","mountain"],["río","river"],["ciudad","city"],["calle","street"],["tienda","shop"],["avión","plane"],["tren","train"],["barco","boat"],["jugar","play"],["comer","eat"],["beber","drink"],["correr","run"],["saltar","jump"],["leer","read"],["escribir","write"]);
+G.push(["She ___ to school every day.","goes",["go","going","gone"]],["They are ___ football.","playing",["play","plays","played"]],["Yesterday I ___ to the park.","went",["go","goes","going"]],["There ___ two cats in the garden.","are",["is","am","be"]],["My brother is ___ than me.","taller",["tall","tallest","more tall"]],["I ___ breakfast at eight o’clock.","have",["has","am","do"]]);
+S.push(["Ayer fui al parque","Yesterday I went to the park"],["Ella juega con su hermano","She plays with her brother"],["Hay dos gatos en el jardín","There are two cats in the garden"],["Mi casa está cerca del río","My house is near the river"])}
+if(window.NIVEL>=3){V.push(["biblioteca","library"],["supermercado","supermarket"],["semana","week"],["mes","month"],["hoy","today"],["mañana","tomorrow"],["ayer","yesterday"],["desayuno","breakfast"],["cena","dinner"],["fruta","fruit"],["verdura","vegetable"],["soleado","sunny"],["nublado","cloudy"],["ventoso","windy"],["cuarenta","forty"],["cincuenta","fifty"],["cien","one hundred"],["cuchara","spoon"],["tenedor","fork"],["cuchillo","knife"]);
+G.push(["There ___ a book on the table.","is",["are","am","be"]],["There ___ three apples in the bag.","are",["is","am","be"]],["She ___ like fish.","doesn’t",["don’t","isn’t","aren’t"]],["Can you play the guitar? No, I ___.","can’t",["don’t","isn’t","am not"]],["He ___ up at seven o’clock.","gets",["get","getting","got"]],["What time ___ you have lunch?","do",["does","are","is"]],["My sister ___ a bike.","rides",["ride","riding","rided"]],["The ball is ___ the chair and the table.","between",["on","in","at"]],["Today is Saturday. Tomorrow is ___.","Sunday",["Friday","Monday","Thursday"]],["Yesterday was Monday. Today is ___.","Tuesday",["Sunday","Wednesday","Friday"]],["Fifty plus fifty is one ___.","hundred",["thousand","ten","fifty"]],["___ is your birthday? In May.","When",["What","Who","Where"]]);
+if(window.NIVEL===3){G=G.filter(function(g){return!/Yesterday I|taller|went/.test(g[0]+" "+g[1])});S=S.filter(function(x){return!/^Yesterday/.test(x[1])});}
+S.push(["Ella se levanta a las siete","She gets up at seven"],["No me gusta el pescado","I don’t like fish"],["¿Puedes nadar?","Can you swim?"],["Hay un libro en la mesa","There is a book on the table"],["Mi hermano juega al fútbol los sábados","My brother plays football on Saturdays"])}
+if(!window.NIVEL||window.NIVEL===2){V.push(["uno","one"],["dos","two"],["tres","three"],["cuatro","four"],["cinco","five"],["seis","six"],["siete","seven"],["ocho","eight"],["nueve","nine"],["diez","ten"],["brazo","arm"],["pierna","leg"],["oreja","ear"],["dedo","finger"],["pelo","hair"],["pera","pear"],["pollo","chicken"],["arroz","rice"],["galleta","biscuit"],["zumo","juice"],["león","lion"],["elefante","elephant"],["tortuga","turtle"],["rana","frog"],["ratón","mouse"],["pato","duck"],["regla","ruler"],["goma","eraser"],["cuaderno","notebook"],["tijeras","scissors"],["colegio","school"],["parque","park"],["amigo","friend"],["tío","uncle"],["tía","aunt"],["correr","run"],["saltar","jump"],["leer","read"],["jugar","play"],["nadar","swim"],["viento","wind"],["nieve","snow"],["primavera","spring"],["verano","summer"],["otoño","autumn"],["invierno","winter"],["alto","tall"],["nuevo","new"],["viejo","old"],["gris","grey"],["marrón","brown"],["pantalones","trousers"]);
+G.push(["How many legs does a dog have? It has ___.","four",["two","six","ten"]],["What colour is the sky? It is ___.","blue",["green","black","brown"]],["My favourite colour ___ red.","is",["are","am","be"]],["He ___ football on Sundays.","plays",["play","playing","played"]],["Happy birthday ___ you!","to",["at","in","on"]],["The book is ___ the table.","on",["in","at","to"]],["I have two ___.","eyes",["eye","a eye","eyeing"]],["Can you swim? Yes, I ___.","can",["am","do","have"]],["It is winter. It is ___.","cold",["hot","happy","fast"]],["I read a ___ every night.","book",["window","sun","shoe"]],["Seven days make one ___.","week",["month","year","hour"]],["We ___ in the park.","play",["plays","playing","played"]]);
+S.push(["Tengo dos hermanos","I have two brothers"],["Ella lee un libro","She reads a book"],["Mi madre cocina el arroz","My mother cooks the rice"],["El pájaro vuela","The bird flies"],["Hoy es lunes","Today is Monday"],["Mi amigo corre rápido","My friend runs fast"],["Hace frío en invierno","It is cold in winter"],["Me gusta el verde","I like green"])}
+
+if(window.NIVEL>=4){V.push(["primero","first"],["segundo","second"],["tercero","third"],["enero","January"],["febrero","February"],["marzo","March"],["abril","April"],["mayo","May"],["junio","June"],["julio","July"],["agosto","August"],["septiembre","September"],["octubre","October"],["noviembre","November"],["diciembre","December"],["bombero","firefighter"],["cocinero","cook"],["granjero","farmer"],["enfermero","nurse"],["policía","police officer"],["hospital","hospital"],["estación de tren","train station"],["panadería","bakery"],["cine","cinema"],["museo","museum"],["siempre","always"],["nunca","never"],["a veces","sometimes"],["despertarse","wake up"],["ducharse","have a shower"],["entre","between"],["detrás de","behind"],["delante de","in front of"],["al lado de","next to"]);
+G.push(["Yesterday I ___ at home.","was",["were","am","is"]],["They ___ at the beach last summer.","were",["was","are","is"]],["There ___ a castle here 500 years ago.","was",["were","is","are"]],["Look! The baby ___ sleeping.","is",["are","am","be"]],["I ___ swim very well. I’m a good swimmer.","can",["can’t","am","does"]],["She has ___ long hair.","got",["get","gets","have"]],["My birthday is in ___. It’s cold and there’s snow.","January",["July","August","June"]],["It’s half ___ three.","past",["to","on","at"]],["It’s quarter ___ five (4:45).","to",["past","at","in"]],["I ___ brush my teeth after dinner. Every day!","always",["never","sometimes","ago"]],["The cat is ___ the sofa (debajo).","under",["on","next","behind of"]],["A ___ works in a hospital.","nurse",["farmer","firefighter","cook"]],["___ you like pizza? Yes, I do.","Do",["Does","Are","Is"]],["He ___ like football. He prefers tennis.","doesn’t",["don’t","isn’t","aren’t"]],["We are ___ a film at the cinema now.","watching",["watch","watches","watched"]]);
+S.push(["Ayer estaba en casa","Yesterday I was at home"],["El gato está detrás del sofá","The cat is behind the sofa"],["Ella siempre desayuna a las ocho","She always has breakfast at eight"],["Mi hermano está jugando al fútbol","My brother is playing football"])}
+if(window.NIVEL===5){V.push(["país","country"],["Francia","France"],["francés","French"],["Alemania","Germany"],["alemán","German"],["Inglaterra","England"],["inglés","English"],["viajar","travel"],["visitar","visit"],["montaña","mountain"],["isla","island"],["desierto","desert"],["selva","jungle"],["peligroso","dangerous"],["divertido","funny"],["aburrido","boring"],["más grande","bigger"],["el más grande","the biggest"],["ayer","yesterday"],["la semana pasada","last week"],["el año que viene","next year"]);
+G.push(["Last weekend we ___ to the zoo.","went",["go","goes","going"]],["Yesterday I ___ a big elephant.","saw",["see","sees","seeing"]],["She ___ football last Saturday.","played",["plays","play","playing"]],["___ you watch TV yesterday? No, I didn’t.","Did",["Do","Does","Were"]],["I didn’t ___ my homework.","finish",["finished","finishes","finishing"]],["An elephant is ___ than a mouse.","bigger",["big","biggest","more big"]],["The cheetah is the ___ animal on land.","fastest",["fast","faster","most fast"]],["This book is ___ interesting than that one.","more",["most","much","the"]],["Next summer I’m going ___ visit London.","to",["at","for","in"]],["You ___ wear a helmet on your bike. It’s important!","must",["mustn’t","can’t","don’t"]],["You ___ run in the corridor. It’s dangerous.","mustn’t",["must","can","should to"]],["How ___ apples are there? Six.","many",["much","more","any"]],["How ___ water do you drink? A lot.","much",["many","more","some"]],["Is there ___ milk in the fridge?","any",["some","many","a"]],["People from France are ___.","French",["France","Frenchy","Frances"]]);
+S.push(["El fin de semana pasado fuimos a la playa","Last weekend we went to the beach"],["Un tigre es más rápido que un oso","A tiger is faster than a bear"],["Voy a visitar a mi abuela","I am going to visit my grandmother"],["No debes tocar el fuego","You mustn’t touch the fire"])}
+function _st(c,ok){window._lv&&_lv(c,ok);try{var s=JSON.parse(localStorage.getItem("stats")||"{}");var x=s[c]||(s[c]={a:0,t:0});x.t++;if(ok)x.a++;localStorage.setItem("stats",JSON.stringify(s))}catch(e){}}
+var HI=[];try{HI=JSON.parse(localStorage.getItem("enhi")||"[]")}catch(e){}
+var TTS=!!window.speechSynthesis,AC=null,n=0,pts=0,streak=0,lock=false,seen={};
+function opts(a,pool){return shuf([a].concat(shuf(pool.filter(function(x,i){return x!==a&&pool.indexOf(x)===i})).slice(0,3)))}
+function speak(t){if(!TTS)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.8;speechSynthesis.speak(u)}catch(e){}}
+function beep(f,d,t){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type=t||"sine";g.gain.value=.15;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+function jingle(a){a.forEach(function(f,i){setTimeout(function(){beep(f,.25)},i*130)})}
+function burst(l,k){for(var i=0;i<k;i++){var s=document.createElement("div");s.className="pop";s.textContent=l[R(l.length)];s.style.left=(15+R(70))+"vw";s.style.top=(35+R(20))+"vh";s.style.setProperty("--dx",(R(160)-80)+"px");s.style.setProperty("--dy",(R(200)+80)+"px");document.body.appendChild(s);setTimeout(function(x){x.remove()},1300,s)}}
+function make(){var t=window.NIVEL===1?[0,1,2,3,6,6][R(6)]:R(6),p=V[R(V.length)];
+ if(window.NIVEL===1&&t===3&&!TTS)t=6;
+ if(t===6){var e=PIC[R(PIC.length)];return{k:"p"+e[1],h:'<button class="spk" id="spk" aria-label="Escuchar">🔊</button><div style="font-size:4.2rem;line-height:1.2">'+e[0]+'</div><div>What is it?</div>',a:e[1],o:opts(e[1],PIC.map(function(x){return x[1]})),say:e[1]}}
+ if(t===2&&window.NIVEL===1){var g1=G1[R(G1.length)];return{k:"g"+g1[0],q:"Completa: "+g1[0],a:g1[1],o:opts(g1[1],g1[2].concat(g1[1])),say:g1[0].replace("___",g1[1]).replace(/ \(.*\)/,"")}}
+ if(t===3&&!TTS)t=2;
+ if(t===0)return{k:"a"+p[1],q:"¿Cómo se dice «"+p[0]+"» en inglés?",a:p[1],o:opts(p[1],V.map(function(x){return x[1]})),say:p[1]};
+ if(t===1)return{k:"b"+p[1],q:"¿Qué significa “"+p[1]+"”?",a:p[0],o:opts(p[0],V.map(function(x){return x[0]})),say:p[1]};
+ if(t===2||t===5){var g=G[R(G.length)];return{k:"g"+g[0],q:"Completa: "+g[0],a:g[1],o:opts(g[1],g[2].concat(g[1])),say:g[0].replace("___",g[1])}}
+ if(t===3)return{k:"l"+p[1],h:'<button class="spk" id="spk" aria-label="Escuchar">🔊</button><div>Escucha y elige lo que oyes</div>',a:p[1],o:opts(p[1],V.map(function(x){return x[1]})),say:p[1],auto:1};
+ var s=S[R(S.length)];return{k:"s"+s[1],type:"build",q:"Ordena la frase: «"+s[0]+"»",a:s[1],words:shuf(s[1].split(" ")),say:s[1]}}
+function show(id){["home","quiz","end"].forEach(function(s){$(s).hidden=s!==id})}
+function start(){n=0;pts=0;streak=0;seen={};show("quiz");next()}
+function next(){if(n>=10)return finish();
+ var q,t=0;do{q=make();t++}while((seen[q.k]||HI.indexOf(q.k)>=0)&&t<40);
+ seen[q.k]=1;HI.push(q.k);if(HI.length>60)HI.shift();try{localStorage.setItem("enhi",JSON.stringify(HI))}catch(e){}
+ lock=false;$("fox").textContent="🦊";$("combo").textContent=streak>1?"🔥 x"+streak:"";$("fill").style.width=(n*10)+"%";$("score").textContent=pts+" ⭐";
+ if(q.h)$("q").innerHTML=q.h;else $("q").textContent=q.q;
+ var o=$("opts");o.innerHTML="";o.style.display="";
+ if(q.h){$("spk").onclick=function(){speak(q.say)};if(q.auto)setTimeout(function(){speak(q.say)},300)}
+ if(q.type==="build")return build(q,o);
+ q.o.forEach(function(t){var b=document.createElement("button");b.className="opt";b.textContent=t;b.onclick=function(){if(lock)return;if(t===q.a){b.classList.add("ok");right(q)}else{b.classList.add("bad","shake");Array.prototype.forEach.call(o.children,function(x){if(x.textContent===q.a)x.classList.add("ok")});wrong(q)}};o.appendChild(b)})}
+function build(q,o){o.style.display="block";var got=[],line=document.createElement("div"),pool=document.createElement("div"),ck=document.createElement("button");
+ line.className="line";pool.className="pool";ck.className="again";ck.textContent="Comprobar";
+ function draw(){line.innerHTML="";got.forEach(function(w,i){var b=document.createElement("button");b.className="chip";b.textContent=w.t;b.onclick=function(){if(lock)return;w.b.hidden=false;got.splice(i,1);draw()};line.appendChild(b)})}
+ q.words.forEach(function(t){var b=document.createElement("button");b.className="chip";b.textContent=t;var w={t:t,b:b};b.onclick=function(){if(lock)return;b.hidden=true;got.push(w);draw();beep(600,.08)};pool.appendChild(b)});
+ ck.onclick=function(){if(lock)return;if(got.map(function(w){return w.t}).join(" ")===q.a)right(q);else{line.classList.add("shake");wrong(q)}};
+ o.appendChild(line);o.appendChild(pool);o.appendChild(ck)}
+function _fl(q){if(!q||!q.o||q.h||q.type)return;try{var f=JSON.parse(localStorage.getItem("fallos")||"[]");var _o=f.filter(function(x){return x.q===q.q})[0];if(_o){_o.b=0;_o.d=0}else f.push({q:q.q,a:q.a,o:q.o,n:window.NIVEL||2,b:0,d:0});if(f.length>40)f.shift();localStorage.setItem("fallos",JSON.stringify(f))}catch(e){}}
+function right(q){_st("ingles",1);lock=true;pts++;streak++;var f=$("fox");f.textContent="🤩";f.classList.remove("hop");void f.offsetWidth;f.classList.add("hop");$("bub").textContent=["Great, Itziar!","Well done!","Perfect!","Awesome, Itziar!"][R(4)];$("score").textContent=pts+" ⭐";$("combo").textContent=streak>1?"🔥 x"+streak:"";jingle(streak>2?[523,659,784]:[660,880]);if(streak%3===0)burst(["⭐","🎉","✨"],14);speak(q.say);n++;setTimeout(next,1500)}
+function wrong(q){_fl(q);_st("ingles",0);lock=true;streak=0;$("fox").textContent="🤔";$("bub").textContent="Casi. Era: "+q.a;$("combo").textContent="";beep(200,.35,"triangle");speak(q.say);n++;setTimeout(next,2400)}
+function finish(){$("fill").style.width="100%";show("end");var s=pts>=9?3:pts>=6?2:pts>=3?1:0;
+ $("stars").textContent="⭐".repeat(s)+"☆".repeat(3-s);$("endtxt").textContent=pts+" de 10";
+ $("endsub").textContent=pts>=9?"Excellent, Itziar! ¡Eres una estrella!":pts>=6?"Very good! ¡Muy buen trabajo!":"Keep trying! ¡Sigue practicando!";
+ try{var b=+localStorage.getItem("enbest")||0;if(pts>b)localStorage.setItem("enbest",pts)}catch(e){}
+ burst(["🎉","⭐","🎈","✨"],22);jingle([523,659,784,1047]);bestTxt()}
+function bestTxt(){var b=0;try{b=+localStorage.getItem("enbest")||0}catch(e){}$("best").textContent="Tu mejor marca: "+b+" de 10. "+(TTS?"Sube el volumen para escuchar el inglés 🔊":"En este navegador no hay voz, pero el resto funciona.")}
+$("go").onclick=start;$("again").onclick=start;$("back").onclick=function(){if(window.speechSynthesis)speechSynthesis.cancel();show("home");bestTxt()};
+bestTxt();
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+EL RINCÓN DE ITZIAR · CÓMO ESTÁ ORGANIZADO
+==========================================
+
+index.html          → la portada: menú, carpetas de cursos y pestañas.
+manifest.json, sw.js, icon-192.png, icon-512.png → para instalar la app en el móvil.
+
+Cada curso tiene su carpeta y es INDEPENDIENTE de los demás:
+
+infantil/
+   infantil.html    → pestaña Infantil (Fito, regleta, contar, agrupar…)
+   micurso.js       → contenido de Mi curso
+   cuentos.js       → cuentos de Infantil
+   comun/           → cómo funcionan las pestañas (Mi curso, Cuentos, Taller, Pintar, Busca)
+
+1-primaria/ … 5-primaria/
+   micurso.js       → contenido de Mi curso (temas, explicaciones, niveles)
+   juegos.js        → temas de Juegos
+   cuentos.js       → cuentos propios del curso
+   comun/           → cómo funcionan las pestañas de ese curso:
+                      micurso.html, juegos.html, cuentos.html, ingles.html,
+                      mas.html, taller.html, pintar.html, busca.html
+
+
+PARA CAMBIAR ALGO
+-----------------
+• Cambia y sube solo los archivos de la carpeta de ese curso.
+  Lo que cambies en 2-primaria/comun/ solo afecta a 2.º.
+• Si quieres el mismo cambio en varios cursos, hay que hacerlo en la
+  carpeta comun/ de cada uno.
+• Al subir cambios, en el móvil basta con cerrar y abrir la app.
+
+Si añades un archivo NUEVO (no si solo modificas uno), añádelo a la lista
+de sw.js y sube el número de 'rincon-v3' (a 'rincon-v4'…) para que
+también funcione sin conexión.
+
+
+IMPORTANTE
+----------
+• Sube SIEMPRE la carpeta completa al alojamiento web, respetando las carpetas.
+• La app debe abrirse desde su dirección web. Con doble clic en index.html
+  desde el ordenador no funciona.
+• El progreso de los niños se guarda en el navegador: se mantiene mientras
+  la app siga en la misma dirección web.
