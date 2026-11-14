@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lectora</title>
+<style>
+:root{--bg:#fff6e0;--card:#fff;--ink:#23305a;--sub:#5b6794;--line:#dcd2b0;--ok:#1f9d6b;--okbg:#d6f5e6;--c1:#ff7a59;--c2:#3b82f6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171c33;--card:#232a4a;--ink:#f3f1ff;--sub:#aab2da;--line:#3a4370;--okbg:#17432f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171c33;--card:#232a4a;--ink:#f3f1ff;--sub:#aab2da;--line:#3a4370;--okbg:#17432f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;line-height:1.35}
+main{max-width:560px;margin:0 auto;padding:14px 14px 30px}
+button{font:inherit;color:inherit}
+.btn{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:8px 12px;font-weight:600;cursor:pointer}
+.btn.on{background:var(--c2);color:#fff;border-color:var(--c2)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+:focus-visible{outline:3px solid var(--c2);outline-offset:2px}
+[hidden]{display:none!important}
+
+h1{font-size:1.7rem;margin:4px 0 10px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{border:0;border-radius:20px;padding:18px 10px;font-weight:700;font-size:1.1rem;color:#fff;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.card span{display:block;font-size:2.6rem}
+.txt{background:var(--card);border:3px solid var(--line);border-radius:20px;padding:18px;line-height:1.9;font-weight:600;letter-spacing:.02em;margin:10px 0}
+.txt.up{text-transform:uppercase}
+.w{cursor:pointer;border-radius:6px;padding:1px 2px}
+.w.on{background:#ffd54f;color:#23305a}
+.opt{display:block;width:100%;border:3px solid var(--line);background:var(--card);border-radius:18px;padding:14px;font-size:1.2rem;font-weight:600;margin-bottom:10px;cursor:pointer}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:#fde0dd;border-color:#d9443b;color:#23305a}
+.go{border:0;border-radius:16px;background:var(--c2);color:#fff;font-weight:700;font-size:1.2rem;padding:12px 20px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.22)}
+.q{background:var(--card);border:3px solid var(--line);border-radius:20px;padding:18px;font-size:1.4rem;font-weight:600;text-align:center;margin:10px 0}
+.q.up{text-transform:uppercase}
+.fb{text-align:center;font-weight:700;font-size:1.3rem;min-height:2rem}
+.fin{text-align:center;padding-top:20px}
+.pop{position:fixed;font-size:1.8rem;pointer-events:none;animation:fl 1.2s ease-out forwards}
+@keyframes fl{from{opacity:1}to{opacity:0;transform:translate(var(--dx),var(--dy))}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+.in{display:block;width:100%;font:inherit;font-size:1.2rem;border:3px solid var(--line);border-radius:14px;padding:10px;margin:8px 0;background:var(--card);color:var(--ink)}
+</style></head><body><main>
+<section id="list"><h1>📚 Los cuentos de Itziar</h1><p id="lead" style="color:var(--sub);margin:0 0 14px">Elige un cuento. Tú decides cómo acaba.</p><div class="cards" id="cards"></div></section>
+<section id="mcu" hidden><div class="row"><button class="btn" id="mcb">⬅️ Cuentos</button></div><h1>✏️ Mi cuento</h1><p style="color:var(--sub)">Escribe nombres y creo un cuento con ellos.</p><input class="in" id="m1" maxlength="20" placeholder="Tu mascota (o un animal)"><input class="in" id="m2" maxlength="20" placeholder="Un amigo o una amiga"><input class="in" id="m3" maxlength="20" placeholder="Un familiar (Mamá, Abuelo...)"><button class="go" id="mgo" style="margin-top:12px">📖 Crear mi cuento</button></section>
+<section id="read" hidden>
+<div class="row"><button class="btn" id="bk">⬅️ Cuentos</button><b id="ttl"></b></div>
+<div class="row"><button class="btn" id="cs">Aa mayús/minús</button><button class="btn" id="fm">A−</button><button class="btn" id="fp">A+</button><button class="btn" id="sp">🐢 Lento</button></div>
+<div class="txt" id="txt"></div><div id="ch"></div>
+<div class="row" style="justify-content:space-between"><button class="btn" id="prev">◀️</button><button class="go" id="play">▶️ Escuchar</button><button class="btn" id="next">▶️</button></div>
+<div class="row" style="justify-content:center"><b id="pgn"></b></div>
+<div class="row" style="justify-content:center"><button class="go" id="qz" hidden style="background:#1f9d6b">❓ Preguntas del cuento</button></div>
+<p style="color:var(--sub);text-align:center;margin:6px 0">Toca una palabra para oírla.</p>
+</section>
+<section id="quiz" hidden>
+<div class="row"><b id="qn"></b><b id="qs" style="margin-left:auto"></b></div>
+<div class="q" id="qq"></div><button class="btn" id="qsay">🔊 Escuchar la pregunta</button>
+<div id="qo" style="margin-top:12px"></div><div class="fb" id="fb"></div>
+</section>
+<section id="fin" class="fin" hidden><div style="font-size:2.6rem" id="fs"></div><h1 id="ft"></h1><p id="fm2" style="color:var(--sub)"></p><button class="go" id="again">Leer otro cuento</button></section>
+</main><script>
+var $=function(i){return document.getElementById(i)},R=function(n){return Math.floor(Math.random()*n)},shuf=function(a){return a.map(function(x){return[Math.random(),x]}).sort(function(a,b){return a[0]-b[0]}).map(function(x){return x[1]})};
+var ST=[
+{n:[1,2],t:"Itziar y la estrella",e:"⭐",k:"#5b4bd5",p:["Una noche, Itziar vio caer una estrella pequeña en su jardín. La estrella brillaba y parecía tener frío.","Itziar la cogió con cuidado. «Quiero volver a casa», dijo la estrella con voz bajita."],c:"Itziar quería ayudarla. ¿Qué hizo?",o:["Hizo una escalera con cajas","Pidió un deseo a la luna"],r:["Subió caja a caja hasta lo más alto y lanzó la estrella al cielo. La estrella brilló mucho y dibujó una sonrisa para ella.","La luna sonrió y sopló fuerte. La estrella subió volando hasta el cielo y, cada noche, le guiña un ojo a Itziar."],q:[["¿Quién vio caer la estrella?","Itziar",["su madre","un pirata","el rey"]],["¿Dónde cayó la estrella?","en el jardín",["en el mar","en el colegio","en una cueva"]],["¿Qué quería la estrella?","volver a casa",["comer pizza","dormir","jugar al fútbol"]]]},
+
+{n:[1,2,3,4,5],t:"La paella de l’iaia",l:1,e:"🥘",k:"#e8710a",p:["Diumenge, Itziar va anar a casa de l’iaia. L’iaia anava a fer una paella gran per a tota la família.","Itziar va ajudar a posar l’arròs i les verdures. Quin bon olor!"],c:"L’iaia va dir: «Ara falta una cosa». Què va demanar?",o:["Un poc de safrà","Una rodanxa de llima"],r:["Itziar va tirar el safrà i l’arròs es va posar groc. Van menjar tots junts i van repetir!","Van espremer la llima sobre l’arròs. Estava boníssim, i tots van repetir!"],q:[["Quin dia va anar Itziar a casa de l’iaia?","diumenge",["dilluns","dimecres","divendres"]],["Per a qui era la paella?","per a tota la família",["per a un veí","només per a Itziar","per al gos"]],["Què va ajudar a posar Itziar?","l’arròs i les verdures",["els plats","el pa","el gelat"]]]},
+{n:[1,2,3,4,5],t:"Itziar i les Falles",l:1,e:"🎆",k:"#e8710a",p:["A València és març i hi ha Falles. Itziar va vore un ninot enorme al carrer.","El ninot era un drac de colors. A la nit, tots els veïns van eixir a vore’l."],c:"Va sonar la música. Què va fer Itziar?",o:["Va ballar amb la banda","Va mirar de lluny amb el seu pare"],r:["Va ballar i va riure amb tots els xiquets. Va ser la nit més divertida!","Va mirar de lluny i va vore com el drac brillava. Quina nit més bonica!"],q:[["En quin mes hi ha les Falles?","març",["juliol","octubre","gener"]],["Quin ninot va vore Itziar?","un drac",["un gat","un ós","un cotxe"]],["Per què van eixir els veïns?","per a vore el ninot",["per a anar a escola","per a dormir","per a nadar"]]]},
+{n:[1,2,3,4,5],t:"El conill i la lluna",l:1,e:"🐰",k:"#e8710a",p:["Un conill va mirar el cel. Va vore una lluna gran i blanca.","El conill va pensar: «Vull tocar la lluna!». Va pujar a un turó molt alt."],c:"Des del turó no hi arribava. Què va fer el conill?",o:["Va demanar ajuda a un mussol","Va botar molt fort"],r:["El mussol li va dir: «La lluna és lluny, però mira l’estany». El conill va vore la lluna a l’aigua i la va tocar amb la patica. Que content estava!","El conill va botar i va botar, però va caure a l’estany. Plof! Va vore la lluna a l’aigua i es va riure. Quina nit més divertida!"],q:[["Quin animal és el protagonista?","un conill",["un gos","un gat","un ànec"]],["Què volia tocar el conill?","la lluna",["el sol","una estrela","un núvol"]],["On va vore la lluna al final?","a l’aigua",["en una cova","en un arbre","a casa"]]]},
+{n:[1,2,3,4,5],t:"Itziar i l’estrela",l:1,e:"🌟",k:"#e8710a",p:["Una nit, Itziar va vore caure una estrela xicoteta al jardí. L’estrela brillava i semblava tindre fred.","Itziar la va agafar amb cura. «Vull tornar a casa», va dir l’estrela amb veu baixeta."],c:"Itziar volia ajudar-la. Què va fer?",o:["Va fer una escala amb caixes","Va demanar un desig a la lluna"],r:["Va pujar caixa a caixa fins dalt de tot i va llançar l’estrela al cel. L’estrela va brillar molt i li va dibuixar un somriure.","La lluna va somriure i va bufar fort. L’estrela va pujar volant al cel i, cada nit, fa un colp d’ull a Itziar."],q:[["Qui va vore caure l’estrela?","Itziar",["la seua mare","un pirata","el rei"]],["On va caure l’estrela?","al jardí",["a la mar","a l’escola","en una cova"]],["Què volia l’estrela?","tornar a casa",["menjar pizza","dormir","jugar a futbol"]]]},
+{n:[1,2,3,4,5],t:"El castell de sorra",l:1,e:"🏖️",k:"#e8710a",p:["Itziar va anar a la platja amb el seu iaio. Portava un poal roig i una pala.","Va fer un castell de sorra amb quatre torres. Una onada gran va vindre corrent."],c:"L’onada s’acostava al castell. Què va fer Itziar?",o:["Va fer un fossat amb la pala","Va eixir corrent a buscar el iaio"],r:["El fossat va parar l’aigua. El castell es va quedar quasi sec i el seu iaio va aplaudir.","El iaio va vindre amb el poal i entre els dos van salvar el castell. Quin bon equip!"],q:[["Amb qui va anar Itziar a la platja?","amb el seu iaio",["amb la seua mare","sola","amb el gos"]],["Quantes torres tenia el castell?","quatre",["dues","sis","una"]],["De quin color era el poal?","roig",["blau","verd","rosa"]]]},
+
+
+{n:[1,2],t:"El dragón miedoso",e:"🐉",k:"#d9487f",p:["Dino era un dragón verde. Echaba fuego por la boca, pero tenía miedo de la oscuridad.","Una noche se apagó la luz de su cueva. Dino se tapó con la manta."],c:"Oyó un ruidito: tic, tic, tic. ¿Qué hizo Dino?",o:["Miró debajo de la manta","Echó un poquito de fuego"],r:["Era un grillo pequeño. Se hicieron amigos y el grillo cantó una canción hasta que Dino se durmió.","Con la luz del fuego vio un ratoncito. Se hicieron amigos y la oscuridad ya no dio miedo."],q:[["¿De qué color era Dino?","verde",["rojo","azul","amarillo"]],["¿De qué tenía miedo?","de la oscuridad",["de los perros","del agua","de los helados"]],["¿Qué pasó con la luz de su cueva?","se apagó",["se hizo más grande","se fue volando","cambió de color"]]]}
+];
+function _st(c,ok){window._lv&&_lv(c,ok);try{var s=JSON.parse(localStorage.getItem("stats")||"{}");var x=s[c]||(s[c]={a:0,t:0});x.t++;if(ok)x.a++;localStorage.setItem("stats",JSON.stringify(s))}catch(e){}}
+var up=window._LV===0,fs=1.6,rate=.6,si=0,pg=0,res=-1,nd="a",hs=[],qi=0,sc=0,AC=null;
+function beep(f,d){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+function _bs(v){var n=v.name.toLowerCase(),l=v.lang.toLowerCase().replace("_","-");return(/natural|neural|online/.test(n)?4:0)+(/google/.test(n)?3:0)+(/premium|enhanced|mejorada|millorada/.test(n)?2:0)+(/valenci/.test(n+l)?6:0)+(/joana|enric|alba|ona|montserrat|jordi|n[uú]ria/.test(n)?1:0)}
+function _bv(){try{var A=speechSynthesis.getVoices().filter(function(a){return/^ca/i.test(a.lang.replace("_","-"))});if(!A.length)return;var s="";try{s=localStorage.getItem("vozVal")||""}catch(e){}var m=A.filter(function(v){return v.name===s})[0];return m||A.slice().sort(function(a,b){return _bs(b)-_bs(a)})[0]}catch(e){}}
+function _sp(u){var s=speechSynthesis,go=function(){s.speak(u);if(/^ca/i.test(u.lang)&&/^\S+$/.test(u.text.trim())&&u.text.length<=16){var w=new SpeechSynthesisUtterance(u.text);w.lang=u.lang;if(u.voice)w.voice=u.voice;w.rate=u.rate*.85;s.speak(w)}};if(s.speaking||s.pending){s.cancel();setTimeout(go,200)}else go()}
+function say(t,cb,hl){if(!window.speechSynthesis){if(cb)cb();return}try{var x=new SpeechSynthesisUtterance(t);var L=ST[si]&&ST[si].l?"ca-ES":"es-ES";x.lang=L;x.rate=rate;var v=L==="ca-ES"?_bv():speechSynthesis.getVoices().filter(function(a){return a.lang.toLowerCase().indexOf(L.slice(0,2))===0})[0];if(v)x.voice=v;if(hl)x.onboundary=function(e){hl(e.charIndex)};x.onend=x.onerror=function(){if(cb)cb()};_sp(x)}catch(e){}}
+function stop(){try{speechSynthesis.cancel()}catch(e){}$("play").textContent="▶️ Escuchar";hl(-1)}
+function hl(ci){Array.prototype.forEach.call(document.querySelectorAll(".w"),function(w){w.classList.toggle("on",ci>=0&&+w.dataset.a<=ci&&ci<+w.dataset.b)})}
+function show(id){["list","read","quiz","fin","mcu"].forEach(function(s){$(s).hidden=s!==id})}
+function mk(t){var b=document.createElement("button");b.textContent=t;return b}
+var ST2=[
+
+
+
+
+
+];
+
+
+
+/* ---- Infantil: cuentos para escuchar (respuestas con dibujos) ---- */
+
+/* ---- 1.º: dos cuentos nuevos ---- */
+
+/* ---- 3.º: cuatro cuentos nuevos, más largos y con preguntas de vocabulario, inferencia y estructura ---- */
+
+
+/* ---- 4.º: cuentos de su nivel ---- */
+
+/* ---- 5.º: cuentos de su nivel ---- */
+
+/* ---- 4.º y 5.º: relat en valencià ---- */
+ST2.push({n:[4,5],l:1,t:"El drac del Patriarca",e:"🐊",k:"#e8710a",p:["A València hi ha una llegenda molt coneguda. Fa molts anys, quan el riu Túria passava ple d'aigua per la ciutat, els veïns contaven que un drac enorme vivia amagat a la riba i que de nit eixia a menjar-se les ovelles i, de vegades, algun despistat.","Ningú no s'atrevia a enfrontar-s'hi. Aleshores, un jove condemnat per un delicte va proposar un tracte: si aconseguia matar el drac, el deixarien en llibertat. Va construir una armadura plena d'espills i se'n va anar cap al riu."],c:"Quan el drac va vore l'armadura, què va passar?",o:["El drac es va quedar enlluernat pels espills","El drac es va vore reflectit i es va espantar"],r:["La llum de la lluna rebotava en els espills i el drac no veia res. El jove va aprofitar el moment per a vèncer-lo. La ciutat el va perdonar i, segons la llegenda, la pell del drac encara es pot vore al Col·legi del Patriarca.","En vore tants dracs en els espills, la bèstia es va espantar i va fugir riu avall per a no tornar mai més. El jove va guanyar la llibertat i els veïns van poder dormir tranquils."],q:[["Per quin riu passava el drac?","el Túria",["l'Ebre","el Xúquer","el Segura"]],["Què va construir el jove?","una armadura plena d'espills",["una gàbia de fusta","una barca","un pont"]],["Què volia aconseguir el jove?","la llibertat",["diners","ser rei","un castell"]],["Quin tipus de text és?","una llegenda",["una recepta","una notícia","un poema"]]]});
+/* ---- Cuentos con caminos: el niño decide (b = nodos; x texto, n siguiente, o opciones, f final) ---- */
+ST2.push(
+{n:[2,3],t:"Perla y el tesoro",e:"🏴‍☠️",k:"#0d9488",b:{
+a:{x:"Perla era una niña pirata. Un día encontró un mapa con una equis roja. «¡Hay un tesoro!», gritó.",n:"b"},
+b:{x:"Perla llegó a una playa. Allí había una cueva oscura y un camino con palmeras.",o:[["Entrar en la cueva","c"],["Seguir el camino de palmeras","d"]]},
+c:{x:"En la cueva vio un cofre. Al lado dormía un cangrejo enorme. ¡Rrrr, rrrr, roncaba!",o:[["Despertar al cangrejo con cosquillas","e"],["Abrir el cofre sin hacer ruido","f"]]},
+d:{x:"Junto a las palmeras, un loro dijo: «¡Cava aquí!». Perla cavó y encontró un cofre lleno de caramelos. Los compartió con el loro. ¡Fin!",f:1},
+e:{x:"El cangrejo se rio y se despertó. ¡Era muy simpático! Le enseñó una puerta secreta con monedas de chocolate. Comieron juntos. ¡Fin!",f:1},
+f:{x:"Perla abrió el cofre sin ruido. Dentro había un libro de cuentos. Se sentó a leer junto al cangrejo dormido. Fue el mejor tesoro. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba la niña pirata?","Perla",["Lola","Itziar","Marta"]],["¿Qué encontró Perla?","un mapa",["una espada","un barco","una llave"]],["¿Qué tenía el mapa?","una equis roja",["un dragón","un círculo azul","una estrella"]]]},
+{n:[2,3],t:"El cohete de Leo",e:"🚀",k:"#6366f1",b:{
+a:{x:"Leo construyó un cohete con cajas de cartón. ¡Tres, dos, uno, despegue! El cohete voló hasta la Luna.",n:"b"},
+b:{x:"En la Luna, Leo vio un alien verde que lloraba junto a su nave.",o:[["Preguntarle qué le pasa","c"],["Darle un abrazo","d"]]},
+c:{x:"«Se me han perdido mis tres estrellas», dijo el alien. Leo miró a su alrededor.",o:[["Buscar en el cráter","e"],["Mirar en el cielo","f"]]},
+d:{x:"El alien dejó de llorar y sonrió. Le regaló una piedra que brilla en la oscuridad. Leo volvió a casa y la guardó bajo la almohada. ¡Fin!",f:1},
+e:{x:"En el cráter brillaban las tres estrellas. Leo se las dio y el alien bailó de alegría. Leo volvió a casa con un amigo nuevo. ¡Fin!",f:1},
+f:{x:"Una estrella flotaba como un globo. Leo saltó, saltó y... ¡la cogió! El alien lo subió a su nave para dar un paseo. ¡Fin!",f:1}},
+q:[["¿Con qué construyó Leo su cohete?","con cajas de cartón",["con madera","con piedras","con botellas"]],["¿A dónde viajó Leo?","a la Luna",["al mar","a Marte","al colegio"]],["¿De qué color era el alien?","verde",["azul","rojo","rosa"]]]},
+{n:[2,3],t:"El patito perdido",e:"🐥",k:"#f59e0b",b:{
+a:{x:"Itziar paseaba por el parque con su madre. Oyó: «¡Pío, pío!». Un patito amarillo estaba solo.",n:"b"},
+b:{x:"El patito estaba triste. Había perdido a su mamá pata. Itziar miró alrededor: vio un estanque y un puente.",o:[["Ir al estanque","c"],["Ir al puente","d"]]},
+c:{x:"En el estanque había muchos patos, pero ninguno era su mamá. De pronto, el patito vio unas plumas en el agua.",o:[["Seguir las plumas","e"],["Llamar «¡Cuac!» muy fuerte","f"]]},
+d:{x:"Desde el puente, Itziar vio a una pata que buscaba a su patito. ¡Era su mamá! Bajaron corriendo y se abrazaron. ¡Fin!",f:1},
+e:{x:"Las plumas llevaban a un nido entre las cañas. Allí esperaba mamá pata. Se abrazaron y dieron las gracias a Itziar. ¡Fin!",f:1},
+f:{x:"Itziar gritó «¡Cuac!» y mamá pata respondió «¡Cuac!» desde lejos. Llegó nadando muy rápido. ¡Qué alegría! ¡Fin!",f:1}},
+q:[["¿De qué color era el patito?","amarillo",["verde","blanco","negro"]],["¿Dónde paseaba Itziar?","en el parque",["en la playa","en el cole","en el bosque"]],["¿Qué había perdido el patito?","a su mamá",["su gorra","su pelota","su comida"]]]},
+{n:[2,3],t:"La poción de Rita",e:"🧙‍♀️",k:"#a21caf",b:{
+a:{x:"La bruja Rita preparaba una poción para hacer reír. Pero se le olvidó un ingrediente.",n:"b"},
+b:{x:"Rita abrió su despensa. Solo había una pluma de colores y un limón.",o:[["Echar la pluma de colores","c"],["Echar el limón","d"]]},
+c:{x:"La poción hizo burbujas de colores. ¡Pop, pop, pop! Rita no sabía si probarla.",o:[["Probarla ella","e"],["Dársela al gato Tomás","f"]]},
+d:{x:"La poción se puso amarilla y olía muy bien. Rita hizo limonada mágica para todo el pueblo. Todos se rieron y bailaron. ¡Fin!",f:1},
+e:{x:"Rita bebió un sorbito. ¡Jajaja! Empezó a reír y flotó por el aire como un globo. Fue el mejor día de su vida. ¡Fin!",f:1},
+f:{x:"El gato Tomás bebió y dijo: «¡Miau-jajaja!». ¡Un gato que se ríe! Rita se rio con él toda la tarde. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba la bruja?","Rita",["Rosa","Lola","Paula"]],["¿Para qué era la poción?","para hacer reír",["para volar","para dormir","para correr"]],["¿Qué se le olvidó a Rita?","un ingrediente",["la escoba","el sombrero","la varita"]]]}
+);
+/* ---- Cuentos clásicos con caminos ---- */
+ST2.push(
+{n:[2,3],t:"Los tres cerditos",e:"🐷",k:"#ec4899",b:{
+a:{x:"Tres cerditos vivían en el bosque. Cada uno quería hacer su casa. Un lobo feroz los miraba desde lejos.",n:"b"},
+b:{x:"El cerdito pequeño tenía que hacer su casa. Había paja y ladrillos.",o:[["Hacerla con paja","c"],["Hacerla con ladrillos","d"]]},
+c:{x:"La casa de paja se hizo muy rápido. Llegó el lobo: «¡Soplaré y tu casa derribaré!». ¡Fuuu!",o:[["Correr a la casa de ladrillos de su hermano","e"],["Esconderse debajo de la cama","f"]]},
+d:{x:"La casa de ladrillos tardó mucho, pero quedó muy fuerte. El lobo sopló y sopló, pero no pudo. Se fue cansado y los tres cerditos hicieron una fiesta. ¡Fin!",f:1},
+e:{x:"El cerdito corrió y entró en la casa de ladrillos. El lobo sopló, pero no pudo entrar. Los hermanos cantaron juntos. ¡Fin!",f:1},
+f:{x:"El lobo derribó la casa, pero el cerdito se escondió tan bien que no lo vio. El lobo se fue y el cerdito hizo una casa de ladrillos. ¡Fin!",f:1}},
+q:[["¿Cuántos cerditos eran?","tres",["dos","cuatro","cinco"]],["¿Quién los miraba desde lejos?","un lobo",["un oso","un zorro","un gato"]],["¿Dónde vivían los cerditos?","en el bosque",["en el mar","en la ciudad","en la nieve"]]]},
+{n:[2,3],t:"Cenicienta",e:"👠",k:"#8b5cf6",b:{
+a:{x:"Cenicienta vivía con su madrastra. Un día llegó una invitación: el príncipe daba un baile en el castillo. «Tú no vas», dijo la madrastra.",n:"b"},
+b:{x:"Cenicienta lloraba, pero apareció su hada madrina. ¡Bibidi, babidi, bu! Tuvo un vestido precioso y una carroza de calabaza. Llegó al baile. «Vuelve antes de las doce», dijo el hada.",o:[["Bailar con el príncipe","c"],["Comer pastel en el jardín","d"]]},
+c:{x:"Bailó con el príncipe. ¡Din, don! Sonaron las doce. Cenicienta corrió y perdió un zapatito de cristal.",o:[["Seguir corriendo a casa","e"],["Volver a recogerlo","f"]]},
+d:{x:"En el jardín conoció al príncipe, que también quería pastel. Se rieron mucho y se hicieron amigos. Cenicienta volvió antes de las doce, muy feliz. ¡Fin!",f:1},
+e:{x:"El príncipe fue casa por casa con el zapatito. Solo le quedó bien a Cenicienta. ¡Fueron muy felices! ¡Fin!",f:1},
+f:{x:"Cenicienta volvió a por su zapatito y el príncipe la vio. «¡Te estaba buscando!», dijo. Fueron muy felices. ¡Fin!",f:1}},
+q:[["¿Con quién vivía Cenicienta?","con su madrastra",["con su abuela","sola","con un lobo"]],["¿Quién la ayudó?","su hada madrina",["una bruja","un mago","un dragón"]],["¿Qué perdió al correr?","un zapatito de cristal",["una corona","un anillo","un collar"]]]},
+{n:[2,3],t:"Pinocho",e:"🪵",k:"#b45309",b:{
+a:{x:"Geppetto hizo un muñeco de madera y lo llamó Pinocho. Un hada le dio vida. «Si dices mentiras, te crecerá la nariz», dijo el hada.",n:"b"},
+b:{x:"Un día, Pinocho se fue al circo en lugar de ir al cole. Al volver, Geppetto le preguntó: «¿Dónde estabas?».",o:[["Decir la verdad","c"],["Decir una mentira","d"]]},
+c:{x:"«Fui al circo», dijo Pinocho. Su nariz no creció. Geppetto lo abrazó y le pidió que fuera al cole.",o:[["Prometer ir al cole mañana","e"],["Pedir ir al circo juntos el domingo","f"]]},
+d:{x:"«Estuve en el cole», dijo Pinocho. ¡Y la nariz creció, creció y creció! Se asustó, dijo la verdad y la nariz volvió a su sitio. Aprendió que no hay que mentir. ¡Fin!",f:1},
+e:{x:"Al día siguiente, Pinocho fue al cole y aprendió mucho. El hada lo vio y lo convirtió en un niño de verdad. ¡Fin!",f:1},
+f:{x:"Geppetto sonrió. El domingo fueron juntos al circo. Pinocho se portó tan bien que el hada lo convirtió en un niño de verdad. ¡Fin!",f:1}},
+q:[["¿De qué estaba hecho Pinocho?","de madera",["de plástico","de metal","de tela"]],["¿Qué le pasaba si mentía?","le crecía la nariz",["se ponía rojo","se le caía el pelo","se dormía"]],["¿Quién le dio vida?","un hada",["un mago","una bruja","un pirata"]]]},
+{n:[2,3],t:"Caperucita Roja",e:"🧣",k:"#dc2626",b:{
+a:{x:"Caperucita Roja llevaba una cesta con un pastel para su abuelita. «No hables con extraños», dijo su mamá. Caperucita fue por el bosque.",n:"b"},
+b:{x:"En el bosque apareció un lobo. «¿A dónde vas, niña?», preguntó con voz dulce.",o:[["Contestar al lobo","c"],["Seguir sin hablar","d"]]},
+c:{x:"El lobo corrió a casa de la abuelita y se puso su camisón. Caperucita llegó y dijo: «Abuelita, ¡qué orejas tan grandes tienes!». Era el lobo.",o:[["Gritar pidiendo ayuda","e"],["Salir corriendo","f"]]},
+d:{x:"Caperucita siguió sin hablar y llegó a casa de su abuelita. Estaba sana y salva. Comieron pastel juntas y el lobo se fue al bosque. ¡Fin!",f:1},
+e:{x:"Un leñador oyó los gritos y llegó corriendo. El lobo se asustó y huyó. La abuelita estaba escondida en el armario, ¡sana y salva! ¡Fin!",f:1},
+f:{x:"Caperucita salió corriendo y encontró a un cazador, que fue a ayudar. El lobo prometió no asustar a nadie más. Comieron pastel todos juntos. ¡Fin!",f:1}},
+q:[["¿Qué llevaba Caperucita en la cesta?","un pastel",["pan","manzanas","huevos"]],["¿Para quién era?","para su abuelita",["para su mamá","para una amiga","para su tía"]],["¿Qué animal apareció en el bosque?","un lobo",["un oso","un zorro","un conejo"]]]},
+{n:[2,3],t:"El patito feo",e:"🦢",k:"#0ea5e9",b:{
+a:{x:"Nació un patito más grande y más gris que sus hermanos. Todos le decían: «¡Qué feo eres!». El patito se puso muy triste.",n:"b"},
+b:{x:"El patito se fue de la granja. Llegó a un lago con nenúfares y a un bosque oscuro.",o:[["Ir al lago","c"],["Entrar en el bosque","d"]]},
+c:{x:"En el lago vio unos cisnes blancos muy elegantes. Se acercó con miedo.",o:[["Saludarlos","e"],["Mirar su reflejo en el agua","f"]]},
+d:{x:"En el bosque pasó un invierno con frío y nieve. Una niña lo encontró y lo cuidó. En primavera se miró en el agua... ¡era un cisne blanco! Voló al lago con otros cisnes. ¡Fin!",f:1},
+e:{x:"«¡Hola!», dijo. Los cisnes sonrieron: «¡Eres uno de los nuestros!». Ya no se sentía feo: era un cisne precioso. ¡Fin!",f:1},
+f:{x:"Se miró en el agua y vio un cisne blanco y precioso. «¡Soy yo!», dijo. Los otros cisnes lo recibieron con alegría. ¡Fin!",f:1}},
+q:[["¿Cómo era el patito al nacer?","grande y gris",["pequeño y amarillo","blanco","rojo"]],["¿Cómo se sentía cuando le decían feo?","triste",["feliz","dormido","contento"]],["¿En qué se convirtió?","en un cisne",["en un pato","en un ganso","en un pollo"]]]},
+{n:[2,3],t:"Leo, el leoncito valiente",e:"🦁",k:"#ea580c",b:{
+a:{x:"Leo era un leoncito que tenía miedo de los truenos. Un día de tormenta, su amiga la cebra se quedó atrapada al otro lado del río.",n:"b"},
+b:{x:"Leo oyó gritar a la cebra. ¡Pum! Retumbó un trueno. Leo tenía miedo, pero quería ayudar a su amiga.",o:[["Cruzar el río por las piedras","c"],["Pedir ayuda al elefante","d"]]},
+c:{x:"Leo saltó de piedra en piedra. De pronto, una piedra se movió.",o:[["Dar un salto muy grande","e"],["Agarrarse a una rama","f"]]},
+d:{x:"Leo corrió a buscar al elefante. El elefante cruzó el río y llevó a la cebra con su trompa. Todos aplaudieron a Leo por pensar tan bien. ¡Fin!",f:1},
+e:{x:"Leo saltó muy fuerte, llegó a la orilla y abrazó a la cebra. «¡Leo, el valiente!», gritaron todos. ¡Fin!",f:1},
+f:{x:"Leo se agarró a la rama, subió a la orilla y ayudó a la cebra. Ya no tenía miedo de los truenos. ¡Fin!",f:1}},
+q:[["¿De qué tenía miedo Leo?","de los truenos",["del agua","de la oscuridad","de los perros"]],["¿Qué animal era su amiga?","una cebra",["una jirafa","una gacela","una vaca"]],["¿Dónde estaba atrapada la cebra?","al otro lado del río",["en una cueva","en un árbol","en un lago"]]]}
+);
+ST2.push(
+{n:[2,3],t:"La gran carrera",e:"🐢",k:"#16a34a",b:{
+a:{x:"En el bosque iba a haber una gran carrera. Lola la tortuga y Salta la liebre querían ganar. La meta estaba en el gran roble.",n:"b"},
+b:{x:"¡Piii! Sonó el silbato. Salta salió corriendo como un rayo. Lola se quedó muy atrás.",o:[["Seguir despacito sin parar","c"],["Pedir ayuda al pájaro Pío","d"]]},
+c:{x:"Lola siguió paso a paso. Salta se paró a comer zanahorias y se durmió. Lola llegó a su lado.",o:[["Despertar a Salta","e"],["Pasar sin hacer ruido","f"]]},
+d:{x:"Pío le ofreció llevarla volando. Lola dijo: «Gracias, pero quiero llegar yo sola». Siguió despacito y llegó a la meta. Todos aplaudieron. ¡Fin!",f:1},
+e:{x:"Lola despertó a Salta con cosquillas. Corrieron juntas y llegaron a la meta a la vez. ¡Empate! ¡Fin!",f:1},
+f:{x:"Lola pasó sin hacer ruido y llegó la primera a la meta. Cuando Salta despertó, felicitó a Lola. ¡Fin!",f:1}},
+q:[["¿Quién era la tortuga?","Lola",["Salta","Pío","Rita"]],["¿Dónde estaba la meta?","en el gran roble",["en el río","en la cueva","en la playa"]],["¿Qué animal era Salta?","una liebre",["una rana","un gato","un pato"]]]},
+{n:[2,3],t:"El castillo de arena",e:"🏰",k:"#0891b2",b:{
+a:{x:"Itziar fue a la playa con su abuelo. Llevaba un cubo rojo y una pala. Quería hacer un castillo de arena enorme.",n:"b"},
+b:{x:"Itziar llenó el cubo de arena mojada. Ya podía empezar el castillo.",o:[["Hacer las torres","c"],["Hacer un foso","d"]]},
+c:{x:"Itziar hizo cuatro torres. Entonces llegó una ola grande, ¡chof!, hacia el castillo.",o:[["Hacer una muralla con la pala","e"],["Llamar al abuelo","f"]]},
+d:{x:"Itziar cavó un foso y el mar lo llenó de agua. Quedó un castillo con río. El abuelo puso conchas de bandera. ¡Fin!",f:1},
+e:{x:"Itziar hizo una muralla rápido. La ola chocó y el castillo se salvó. ¡Qué valiente! ¡Fin!",f:1},
+f:{x:"El abuelo llegó con el cubo y, entre los dos, salvaron el castillo. ¡Qué buen equipo! ¡Fin!",f:1}},
+q:[["¿Con quién fue Itziar a la playa?","con su abuelo",["con su madre","sola","con el perro"]],["¿De qué color era el cubo?","rojo",["azul","verde","rosa"]],["¿Qué quería hacer Itziar?","un castillo de arena",["un barco","un hoyo","una muñeca"]]]}
+);
+ST2.push(
+{n:[2,3],t:"Peter Pan",e:"🧚",k:"#16a34a",b:{
+a:{x:"Una noche, Peter Pan y el hada Campanilla entraron por la ventana de Wendy. «¡Venid conmigo al País de Nunca Jamás!». Con polvo de hadas, los niños empezaron a volar.",n:"b"},
+b:{x:"Volaron sobre el mar hasta una isla. Vieron una laguna con sirenas y un barco pirata.",o:[["Ir a la laguna de las sirenas","c"],["Ir al barco del capitán Garfio","d"]]},
+c:{x:"Las sirenas cantaban muy bonito. De pronto, el capitán Garfio apareció en su barco.",o:[["Esconderse bajo el agua","e"],["Volar rápido con Peter","f"]]},
+d:{x:"Garfio dormía la siesta. Peter le quitó su sombrero y se lo puso a un loro. Garfio se despertó y, con tanta risa, no pudo perseguirlos. Los niños volvieron a casa felices. ¡Fin!",f:1},
+e:{x:"Las sirenas escondieron a los niños entre las algas. Garfio no encontró a nadie y se fue enfadado. Wendy volvió a su cama con muchas historias. ¡Fin!",f:1},
+f:{x:"Peter y Wendy volaron tan rápido que Garfio se mareó. Campanilla lo cubrió de polvo de hadas y él se rio. Wendy volvió a casa. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba el hada?","Campanilla",["Rita","Perla","Luna"]],["¿A dónde fueron los niños?","al País de Nunca Jamás",["a la Luna","a la playa","al bosque"]],["¿Cómo volaron?","con polvo de hadas",["con alas","con un globo","con un avión"]]]},
+{n:[2,3],t:"Hansel y Gretel",e:"🍬",k:"#d97706",b:{
+a:{x:"Hansel y Gretel vivían con su papá cerca del bosque. Un día se perdieron entre los árboles. Tenían hambre y frío.",n:"b"},
+b:{x:"De pronto vieron una casita hecha de pan, chocolate y caramelos. ¡Qué olor!",o:[["Comer un trozo de chocolate","c"],["Llamar a la puerta","d"]]},
+c:{x:"¡Ñam, ñam! Salió una bruja. «¡Quedaos a vivir aquí!». Los niños vieron que era una bruja mala.",o:[["Huir por la ventana","e"],["Engañarla con una escoba","f"]]},
+d:{x:"Una anciana abrió la puerta, pero era una bruja. Los niños se asustaron. Gretel cogió la escoba y la bruja salió volando por la chimenea. ¡Fin!",f:1},
+e:{x:"Los niños saltaron por la ventana y corrieron por el bosque. Siguieron un camino de piedrecitas blancas y llegaron a casa. Su papá los abrazó. ¡Fin!",f:1},
+f:{x:"Gretel dijo: «¡Mira, hay una araña enorme!». La bruja se giró y los niños salieron corriendo. Llegaron a casa y su papá los abrazó. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaban los hermanos?","Hansel y Gretel",["Pedro y Ana","Leo y Lola","Juan y Rosa"]],["¿De qué estaba hecha la casita?","de pan y dulces",["de madera","de piedra","de papel"]],["¿Quién vivía en la casita?","una bruja",["un lobo","un rey","un pirata"]]]},
+{n:[2,3],t:"El niño que amaba la Navidad",e:"🎄",k:"#dc2626",b:{
+a:{x:"Nico era un niño al que le encantaba la Navidad. Cada año ponía el árbol con su familia. Pero este año... ¡no encontraban la estrella de arriba!",n:"b"},
+b:{x:"Nico miró por toda la casa y no apareció. Faltaban dos días para Nochebuena.",o:[["Hacer una estrella de papel","c"],["Pedir ayuda a la vecina Rosa","d"]]},
+c:{x:"Nico dibujó una estrella con papel dorado. Quedó muy bonita, pero era algo pequeña.",o:[["Ponerle luces alrededor","e"],["Añadirle purpurina","f"]]},
+d:{x:"Rosa tenía una estrella antigua de su infancia. «Es tuya», dijo. Nico la puso en el árbol y todos aplaudieron. Esa noche cenaron juntos, y Rosa también se quedó. ¡Fin!",f:1},
+e:{x:"Nico le puso lucecitas y la estrella brilló como el sol. Toda la familia dijo: «¡La más bonita del mundo!». ¡Fin!",f:1},
+f:{x:"Nico le echó purpurina y la estrella brilló mucho. Mamá y papá se emocionaron. Fue la mejor Navidad. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba el niño?","Nico",["Leo","Hugo","Pedro"]],["¿Qué faltaba en el árbol?","la estrella",["las luces","los regalos","el turrón"]],["¿Qué fiesta era?","la Navidad",["el cumpleaños","las Fallas","la Pascua"]]]},
+{n:[2,3],t:"La sirenita",e:"🧜‍♀️",k:"#0ea5e9",b:{
+a:{x:"Marina era una sirena muy curiosa. Vivía en el fondo del mar con su familia. Soñaba con ver el mundo de arriba.",n:"b"},
+b:{x:"Un día, Marina vio un barco hundido y una luz en la superficie.",o:[["Nadar hacia la luz","c"],["Explorar el barco hundido","d"]]},
+c:{x:"Marina salió del agua y vio una playa con estrellas. Allí había un niño tocando una flauta.",o:[["Cantar con él","e"],["Esconderse y escuchar","f"]]},
+d:{x:"En el barco encontró un cofre con una caracola mágica. Al soplarla, sonó una música preciosa y los peces bailaron con ella. Marina volvió a casa feliz y contó el secreto a su familia. ¡Fin!",f:1},
+e:{x:"Marina cantó y el niño tocó la flauta. Fue una música tan bonita que las estrellas brillaron más. Quedaron como amigos. ¡Fin!",f:1},
+f:{x:"Marina escuchó la música y aprendió la canción. Volvió al mar y la cantó con las otras sirenas. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba la sirena?","Marina",["Luna","Perla","Rita"]],["¿Dónde vivía Marina?","en el fondo del mar",["en un castillo","en el bosque","en la playa"]],["¿Cómo era Marina?","muy curiosa",["muy dormilona","muy enfadada","muy miedosa"]]]},
+{n:[2,3],t:"La bella durmiente",e:"👑",k:"#a855f7",b:{
+a:{x:"Había una princesa muy bonita. Un hada mala dijo: «Se pinchará con un huso y dormirá cien años». Un hada buena dijo: «Un beso la despertará».",n:"b"},
+b:{x:"Cuando creció, la princesa oyó un ruido en la torre del castillo.",o:[["Subir a la torre","c"],["Seguir jugando en el jardín","d"]]},
+c:{x:"En la torre había una rueca. La princesa tocó el huso, ¡ay!, y se durmió. Todo el castillo se durmió con ella.",o:[["Un príncipe valiente llega","e"],["Un hada buena la despierta","f"]]},
+d:{x:"La princesa jugó en el jardín y no subió a la torre. El hada buena hizo desaparecer el huso para siempre. La princesa vivió feliz, sin dormir cien años. ¡Fin!",f:1},
+e:{x:"Un príncipe cruzó los rosales, entró y le dio un beso. La princesa despertó y todo el castillo con ella. Hicieron una gran fiesta. ¡Fin!",f:1},
+f:{x:"El hada buena sopló sobre la princesa. Ella abrió los ojos y todo el castillo despertó. Hubo música y pasteles. ¡Fin!",f:1}},
+q:[["¿Cuántos años iba a dormir la princesa?","cien",["diez","mil","cinco"]],["¿Con qué se pinchó?","con un huso",["con una espina","con un cuchillo","con una aguja de coser"]],["¿Qué había en la torre?","una rueca",["un dragón","un tesoro","un libro"]]]},
+{n:[2,3],t:"El ratoncito Pérez",e:"🦷",k:"#78716c",b:{
+a:{x:"A Lucía se le cayó un diente. ¡Qué contenta! «Esta noche vendrá el ratoncito Pérez», dijo su abuela.",n:"b"},
+b:{x:"Lucía quería dejar su diente en un lugar especial.",o:[["Debajo de la almohada","c"],["En un vaso de agua","d"]]},
+c:{x:"Lucía se acostó, pero no podía dormir. Oyó pasitos: ¡tic, tic, tic!",o:[["Fingir que dormía","e"],["Abrir un ojito","f"]]},
+d:{x:"Por la mañana, el vaso tenía una monedita y una notita: «Gracias por el diente. Cuídalo». Lucía sonrió. ¡Fin!",f:1},
+e:{x:"Lucía fingió dormir. El ratoncito dejó una moneda y un caramelo. Por la mañana, ¡qué sorpresa! ¡Fin!",f:1},
+f:{x:"Lucía abrió un ojito y vio al ratoncito con un saquito. «¡Hola!», susurró. El ratoncito sonrió y dejó una moneda. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba la niña?","Lucía",["Marta","Ana","Rosa"]],["¿Qué se le cayó?","un diente",["una pulsera","un zapato","un lápiz"]],["¿Quién iba a venir?","el ratoncito Pérez",["Papá Noel","un hada","un mago"]]]},
+{n:[2,3],t:"El león y el ratón",e:"🦁",k:"#ea580c",b:{
+a:{x:"Un león dormía bajo un árbol. Un ratoncito pasó por encima de su cabeza. El león se despertó y lo atrapó con su garra.",n:"b"},
+b:{x:"«¡Suéltame, por favor! Algún día te ayudaré», dijo el ratón.",o:[["Soltarlo","c"],["Quedárselo","d"]]},
+c:{x:"El león soltó al ratón. Días después, el león cayó en una red de cazadores. ¡No podía moverse!",o:[["Rugir pidiendo ayuda","e"],["Quedarse quieto, triste","f"]]},
+d:{x:"El león se quedó con el ratón, pero se aburrió. Pensó: «Era pequeñito y asustado». Lo soltó y le pidió perdón. Desde ese día, fueron amigos. ¡Fin!",f:1},
+e:{x:"El ratón oyó el rugido y corrió. Con sus dientecitos, royó las cuerdas. «¡Libre!», dijo el león. Desde entonces fueron amigos. ¡Fin!",f:1},
+f:{x:"El ratón vio al león triste y fue a ayudarlo. Royó la red con sus dientes. El león dijo: «Hasta los pequeños son grandes». ¡Fin!",f:1}},
+q:[["¿Quién dormía bajo el árbol?","un león",["un oso","un lobo","un gato"]],["¿Quién pasó por encima de su cabeza?","un ratoncito",["un pájaro","una mosca","una rana"]],["¿Cómo ayudó el ratón?","royendo las cuerdas",["rugiendo","corriendo","cantando"]]]},
+{n:[2,3],t:"El joven rey león",e:"👑",k:"#ca8a04",b:{
+a:{x:"En la sabana vivía Rayo, un leoncito hijo del rey león. «Algún día serás rey», le dijo su papá. Rayo no sabía qué hacía un buen rey.",n:"b"},
+b:{x:"Un día, Rayo salió a pasear por la sabana. Vio un río y una colina.",o:[["Ir al río","c"],["Subir a la colina","d"]]},
+c:{x:"En el río, una cría de gacela lloraba: tenía una pata atrapada entre las piedras.",o:[["Mover la piedra con fuerza","e"],["Llamar a los demás animales","f"]]},
+d:{x:"Desde la colina, Rayo vio toda la sabana. Vio que cada animal tenía su sitio. «Un buen rey cuida a todos», pensó. Volvió a casa orgulloso. ¡Fin!",f:1},
+e:{x:"Rayo empujó la piedra con todas sus fuerzas. La gacela quedó libre. «Un buen rey ayuda», pensó. ¡Fin!",f:1},
+f:{x:"Rayo llamó a los animales. Entre todos movieron la piedra y la gacela quedó libre. «Un buen rey trabaja en equipo», pensó. ¡Fin!",f:1}},
+q:[["¿Cómo se llamaba el leoncito?","Rayo",["Leo","Nico","Simón"]],["¿Dónde vivía?","en la sabana",["en el bosque","en el mar","en la ciudad"]],["¿Qué iba a ser Rayo algún día?","rey",["pirata","mago","cazador"]]]},
+{n:[2,3],t:"El ladrón de las hojas",e:"🍂",k:"#b45309",b:{
+a:{x:"Cada mañana, las hojas del gran árbol del parque desaparecían. Los niños decían: «¡Hay un ladrón de hojas!». Itziar quería descubrirlo.",n:"b"},
+b:{x:"Itziar encontró unas huellas pequeñitas junto al árbol.",o:[["Seguir las huellas","c"],["Vigilar de noche con una linterna","d"]]},
+c:{x:"Las huellas llevaban a un arbusto. Se oía: ¡cras, cras, cras!",o:[["Mirar con cuidado","e"],["Llamar bajito","f"]]},
+d:{x:"De noche, Itziar vio un erizo con una bolsa de hojas. Lo siguió hasta su casa, que era un hueco bajo un tronco. Las hojas eran su cama para el invierno. Itziar sonrió. ¡Fin!",f:1},
+e:{x:"Itziar miró y vio un erizo con montones de hojas. «Las necesito para dormir en invierno», dijo. Itziar le ayudó a llevarlas. ¡Fin!",f:1},
+f:{x:"Itziar llamó bajito: «¿Hola?». Salió un erizo con hojas. «Perdona, las necesito para mi cama». Itziar lo entendió y se hicieron amigos. ¡Fin!",f:1}},
+q:[["¿Qué desaparecía cada mañana?","las hojas",["las flores","los frutos","los bancos"]],["¿Dónde pasaba?","en el parque",["en la playa","en el cole","en el bosque"]],["¿Quién quería descubrir al ladrón?","Itziar",["Lola","Hugo","su madre"]]]}
+);
+/* Cuentos solo de este curso (se añaden a los comunes) */
+ST2.push(
+{n:[2],t:"Los tres cerditos",e:"🐷",k:"#e0689a",p:["Tres cerditos salieron a construir sus casas. Un lobo vivía cerca del bosque.","El primero hizo su casa de paja. El segundo la hizo de madera. El tercero trabajó mucho y la hizo de ladrillos."],c:"El lobo sopló y sopló. ¿Qué hicieron los cerditos pequeños?",o:["Corrieron a la casa de ladrillos","Se quedaron mirando al lobo"],r:["La casa de paja y la de madera se cayeron, pero la de ladrillos no. Los tres cerditos se quedaron juntos y a salvo.","Pero la casa de madera era débil y se cayó. Los cerditos corrieron a la casa de ladrillos y su hermano les abrió la puerta."],q:[["¿Cuántos cerditos eran?","tres",["dos","cuatro","cinco"]],["¿De qué hizo la casa el primer cerdito?","de paja",["de ladrillos","de madera","de piedra"]],["¿Qué casa no se cayó?","la de ladrillos",["la de paja","la de madera","ninguna se cayó"]]]},
+{n:[2],t:"Cenicienta",e:"👠",k:"#8e63d9",p:["Cenicienta vivía con su madrastra y sus hermanastras. Ella limpiaba la casa todos los días.","El rey invitó a todos a un baile. Un hada le regaló un vestido, una carroza y unos zapatos de cristal, pero la magia acababa a las doce."],c:"El baile era precioso, pero sonaron las doce campanadas. ¿Qué hizo Cenicienta?",o:["Salió corriendo y perdió un zapato","Se despidió del príncipe con calma"],r:["El príncipe encontró el zapato de cristal y buscó por todo el reino a su dueña. Al probárselo a Cenicienta, le quedó perfecto. ¡Y fueron muy felices!","Le prometió al príncipe volver a verlo. Él encontró su casa, le entregó un zapato de cristal y fueron muy felices."],q:[["¿Con quién vivía Cenicienta?","con su madrastra",["con un dragón","con el rey","sola"]],["¿Qué le regaló el hada?","un vestido y una carroza",["un perro","una casa","un libro"]],["¿De qué eran los zapatos?","de cristal",["de madera","de oro","de lana"]]]},
+{n:[2],t:"Pinocho",e:"🪵",k:"#c47a2c",p:["Gepetto era un carpintero que hizo un muñeco de madera. Lo llamó Pinocho y, por arte de magia, el muñeco cobró vida.","Pinocho tenía que ir a la escuela, pero un zorro y un gato lo invitaron a ir al circo."],c:"Pinocho dudó un momento. ¿Qué hizo?",o:["Fue a la escuela","Se fue con el zorro"],r:["Aprendió a leer y a escribir, y Gepetto se puso muy contento. Pinocho se portó tan bien que el hada lo convirtió en un niño de verdad.","Dijo una mentira y su nariz creció y creció. Se dio cuenta de su error, volvió con Gepetto y, por ser sincero, se convirtió en un niño de verdad."],q:[["¿Quién hizo a Pinocho?","Gepetto",["el zorro","el rey","el hada"]],["¿De qué era Pinocho?","de madera",["de papel","de lana","de piedra"]],["¿Qué pasó al final?","se hizo un niño de verdad",["se fue al circo para siempre","se convirtió en pájaro","se quedó de madera"]]]},
+{n:[2],t:"Caperucita Roja",e:"🧺",k:"#d9443b",p:["Caperucita Roja iba a casa de su abuelita con una cesta de pan y miel. Su madre le dijo: «No hables con extraños».","En el bosque se encontró con un lobo. «¿Adónde vas?», le preguntó el lobo con voz suave."],c:"Caperucita se acordó de lo que le dijo su madre. ¿Qué hizo?",o:["Siguió su camino sin hablar","Le dijo que era un secreto"],r:["Corrió hasta la casa de su abuelita y le contó todo. Un leñador espantó al lobo, y los tres comieron pan con miel.","Dijo: «Es un secreto». El lobo se rió y se fue. Caperucita llegó a casa de su abuela y merendaron pan con miel muy contentas."],q:[["¿De qué color era la capa de Caperucita?","roja",["azul","verde","amarilla"]],["¿Qué llevaba en la cesta?","pan y miel",["pizza","fruta","juguetes"]],["¿Qué le dijo su madre?","que no hablara con extraños",["que se quedara en casa","que comprara leche","que corriera mucho"]]]},
+{n:[2],t:"El patito feo",e:"🦢",k:"#1e88e5",p:["Un patito nació más grande y gris que sus hermanos. Todos le decían: «¡Qué feo eres!».","El patito se sintió muy triste y se fue lejos. Pasó el invierno solo, con mucho frío."],c:"En primavera vio unos cisnes blancos en el lago. ¿Qué hizo el patito?",o:["Se acercó a ellos","Se escondió entre las plantas"],r:["Se miró en el agua y vio que ya era un cisne blanco y precioso. Los cisnes lo recibieron como a un amigo.","Los cisnes lo vieron y lo invitaron a nadar. En el agua se miró y descubrió que también era un cisne hermoso."],q:[["¿De qué color era el patito?","gris",["rosa","negro","verde"]],["¿Cómo se sintió el patito?","triste",["enfadado","dormido","contento"]],["¿En qué animal se convirtió?","en un cisne",["en una rana","en una gallina","en un pez"]]]},
+{n:[2],t:"Leo, el leoncito valiente",e:"🦁",k:"#c77700",p:["Leo era un leoncito pequeño que vivía en la sabana. Sus papás eran grandes y fuertes, y Leo quería ser igual.","Un día, Leo vio un río muy ancho. Al otro lado había una fruta dulce y madura que quería probar."],c:"El río corría rápido. ¿Qué hizo Leo?",o:["Buscó un puente de piedras","Pidió ayuda a su amiga la jirafa"],r:["Saltó de piedra en piedra con mucho cuidado. Llegó al otro lado, comió la fruta y volvió contento: ser valiente también es ser prudente.","La jirafa estiró su largo cuello y lo ayudó a cruzar. Comieron la fruta juntos, y Leo aprendió que pedir ayuda también es de valientes."],q:[["¿Qué animal es Leo?","un león",["un tigre","un oso","un perro"]],["¿Qué quería probar?","una fruta",["un helado","un pez","una galleta"]],["¿Dónde estaba la fruta?","al otro lado del río",["en un árbol","en su casa","en la montaña"]]]},
+{n:[2],t:"El pueblo sin agua",e:"🏘️",k:"#1f9d6b",p:["En un pueblo pequeño de montaña, el río se había quedado sin agua. Los vecinos estaban preocupados porque las plantas del huerto se secaban y los animales tenían sed.","Lola, una niña muy curiosa, subió por el camino para buscar el motivo. Arriba, entre las piedras, encontró un tronco enorme que tapaba la corriente."],c:"El tronco pesaba mucho. ¿Qué hizo Lola?",o:["Pidió ayuda a sus vecinos","Empujó con una rama larga"],r:["Bajó corriendo al pueblo y llamó a todos. Entre muchas manos movieron el tronco y el agua volvió a correr por el río. Aquella tarde hubo fiesta en la plaza.","Empujó poco a poco con una rama muy larga hasta que el tronco rodó. El agua volvió al río y los vecinos la aplaudieron en la plaza."],q:[["¿Dónde estaba el pueblo?","en la montaña",["en la playa","en el desierto","en una isla"]],["¿Qué tapaba el agua?","un tronco enorme",["una roca de hielo","una puerta","un coche"]],["¿Cómo se sentían los vecinos al principio?","preocupados",["aburridos","dormidos","muy contentos"]]]},
+{n:[2],t:"El gato Bigotes",e:"🐱",k:"#e8710a",p:["Bigotes era un gato naranja que vivía en una panadería. Cada mañana se sentaba junto al horno, porque allí hacía calor y olía a pan recién hecho.","Un día, una pequeña ratita se coló por la puerta. Bigotes abrió mucho los ojos, pero la ratita le dijo muy bajito: «Solo tengo hambre»."],c:"Bigotes no sabía qué hacer. ¿Qué decidió?",o:["Compartir un trozo de pan","Acompañarla hasta su casa"],r:["Bigotes le dio un trozo de pan con mantequilla. La ratita comió feliz y, desde aquel día, venían juntos cada mañana a desayunar.","La acompañó hasta una grieta de la pared, donde vivía toda su familia. Le dieron las gracias y Bigotes volvió a su horno con una sonrisa."],q:[["¿De qué color era Bigotes?","naranja",["negro","blanco","gris"]],["¿Dónde vivía Bigotes?","en una panadería",["en una granja","en un colegio","en un barco"]],["¿Qué quería la ratita?","comer algo",["jugar con el gato","dormir en el horno","un abrigo"]]]},
+{n:[2],t:"Excursión a la playa",e:"🏖️",k:"#3b82f6",p:["La clase de segundo salió de excursión a la playa. Mario llevaba su cubo y su pala, y Aya una lupa para mirar los bichos de la orilla.","Mientras buscaban conchas, Aya vio algo entre las rocas. Era una botella de plástico llena de arena que alguien había dejado allí."],c:"Los niños querían cuidar la playa. ¿Qué hicieron?",o:["Recogieron toda la basura","Avisaron a la maestra"],r:["Llenaron una bolsa con papeles, botellas y latas. Cuando terminaron, la playa estaba limpia y los cangrejos salieron a saludar.","La maestra trajo unas bolsas y todos ayudaron. En un momento la playa quedó limpia y la maestra les dio una pegatina."],q:[["¿Adónde fue la excursión?","a la playa",["a la montaña","al zoo","al museo"]],["¿Qué llevaba Aya?","una lupa",["un cubo","una cometa","un paraguas"]],["¿Qué encontraron entre las rocas?","una botella de plástico",["una concha de oro","un barco","un mapa"]]]},
+{n:[2],t:"El osito dormilón",e:"🧸",k:"#8e63d9",p:["Teo era un osito que no conseguía dormir. Daba vueltas en su cama de hojas y contaba estrellas por la entrada de la cueva, pero el sueño no llegaba.","Su abuela osa le preparó un vaso de leche tibia y le dijo: «Cuando estás nervioso, tu cuerpo necesita calma»."],c:"Teo quería dormir. ¿Qué probó?",o:["Respirar hondo y despacio","Escuchar un cuento"],r:["Respiró hondo cinco veces, muy despacio. Poco a poco sus ojos se cerraron y soñó que volaba entre las nubes.","La abuela le contó el cuento de un pez dormilón. Antes del final, Teo ya roncaba suavemente."],q:[["¿Qué le pasaba a Teo?","no podía dormir",["tenía mucha hambre","había perdido su cueva","tenía frío"]],["¿Quién le preparó la leche?","su abuela",["su madre","su hermano","un pastor"]],["¿Dónde vivía Teo?","en una cueva",["en un barco","en una casa de papel","en un coche"]]]},
+{n:[2],t:"La gran carrera",e:"🏁",k:"#d9487f",p:["En el prado se celebraba la gran carrera de animales. La liebre presumía de ser la más veloz y la tortuga, en cambio, caminaba despacio pero sin parar.","La liebre salió disparada, pero a mitad de camino se tumbó a descansar bajo un árbol. «Tengo tiempo de sobra», pensó, y cerró los ojos."],c:"La tortuga seguía caminando. ¿Qué pasó al final?",o:["Ganó la tortuga","La liebre se despertó a tiempo"],r:["La tortuga cruzó la meta justo cuando la liebre despertaba. Todos aplaudieron y aprendieron que con constancia se llega lejos.","La liebre se despertó y corrió muy deprisa, pero llegó a la meta a la vez que la tortuga. ¡Empataron y todos se rieron!"],q:[["¿Quién presumía de ser veloz?","la liebre",["la tortuga","el zorro","el caracol"]],["¿Qué hizo la liebre a mitad de camino?","se tumbó a descansar",["se perdió","se comió una zanahoria","se cayó al río"]],["¿Cómo caminaba la tortuga?","despacio pero sin parar",["rápido y sin cuidado","saltando","dormida"]]]}
+);
+
+ST=ST2.concat(ST);
+ST.forEach(function(s,i){if(s.n&&s.n.indexOf(window._LV==null?2:window._LV)<0)return;var b=mk("");b.className="card";b.style.background=s.k;b.innerHTML="<span>"+s.e+"</span>"+s.t;b.onclick=function(){si=i;pg=0;res=-1;nd="a";hs=[];$("ttl").textContent=s.e+" "+s.t;show("read");page()};$("cards").appendChild(b)});
+function cl(s){s=(s||"").replace(/[^A-Za-zÀ-ÿ \-]/g,"").trim().slice(0,20);return s?s.charAt(0).toUpperCase()+s.slice(1):""}
+var mb=mk("");mb.className="card";mb.style.background="#1f9d6b";mb.innerHTML="<span>✏️</span>Mi cuento";mb.onclick=function(){show("mcu")};$("cards").insertBefore(mb,$("cards").firstChild);
+$("mcb").onclick=function(){show("list")};
+$("mgo").onclick=function(){var M=cl($("m1").value)||"Lola",A=cl($("m2").value)||"Hugo",F=cl($("m3").value)||"Mamá";
+ var s={t:"Mi cuento",e:"✏️",k:"#1f9d6b",p:["Un día, Itziar salió al parque con "+M+". Allí se encontraron con "+A+".",F+" les había preparado una merienda con galletas, fruta y zumo."],c:"De pronto empezó a llover. ¿Qué hicieron?",o:["Buscaron un árbol grande","Corrieron a refugiarse en casa"],r:["Se taparon bajo el árbol y "+M+" hizo reír a todos. Cuando paró de llover, salió un arcoíris y merendaron juntos.","Llegaron a casa y "+F+" les dio toallas calentitas. Merendaron mirando la lluvia por la ventana."],q:[["¿Con quién salió Itziar al parque?",M,["con un pirata","con un robot","con un dragón"]],["¿A quién se encontraron en el parque?",A,["al rey","a un lobo","a un mago"]],["¿Quién había preparado la merienda?",F,["un cocinero","el hada","el director"]]]};
+ ST.push(s);si=ST.length-1;pg=0;res=-1;$("ttl").textContent="✏️ Mi cuento";show("read");page()};
+function ptxt(){var s=ST[si];if(s.b)return s.b[nd].x;return pg<2?s.p[pg]:pg===2?s.c:s.r[res]}
+function page(){stop();var t=ptxt(),h="",m,re=/\S+/g;while((m=re.exec(t)))h+='<span class="w" data-a="'+m.index+'" data-b="'+(m.index+m[0].length)+'">'+m[0]+'</span> ';
+ var x=$("txt");x.innerHTML=h;x.className="txt"+(up?" up":"");x.style.fontSize=fs+"rem";var B=ST[si].b,nn=B&&B[nd];$("pgn").textContent=B?"Página "+(hs.length+1):"Página "+(pg+1)+" de 4";
+ var ch=$("ch");ch.innerHTML="";
+ if(B){if(nn.o){var hq=document.createElement("p");hq.className="fb";hq.textContent="🤔 ¿Qué quieres hacer?";ch.appendChild(hq);nn.o.forEach(function(o){var b=mk(o[0]);b.className="opt";b.onclick=function(){hs.push(nd);nd=o[1];beep(700,.12);page()};ch.appendChild(b)})}
+ if(nn.f){var rb=mk("🔄 Probar otro final");rb.className="btn";rb.style.marginBottom="10px";rb.onclick=function(){nd="a";hs=[];page()};ch.appendChild(rb)}}else if(pg===2&&res<0)ST[si].o.forEach(function(o,i){var b=mk(o);b.className="opt";b.onclick=function(){res=i;pg=3;beep(700,.12);page()};ch.appendChild(b)});
+ $("prev").disabled=B?!hs.length:pg===0;$("next").hidden=B?!nn.n:pg===3||(pg===2&&res<0);$("qz").hidden=B?!nn.f:pg!==3;
+ Array.prototype.forEach.call(document.querySelectorAll(".w"),function(w){w.onclick=function(){say(w.textContent.replace(/[¡!¿?.,«»:;]/g,""))}});if(window._LV===0)setTimeout(function(){$("play").click()},250)}
+$("play").onclick=function(){if($("play").textContent.indexOf("Parar")>=0){stop();return}$("play").textContent="⏹️ Parar";say(ptxt(),stop,hl)};
+$("next").onclick=function(){if(ST[si].b){hs.push(nd);nd=ST[si].b[nd].n}else pg++;page()};
+$("prev").onclick=function(){if(ST[si].b){nd=hs.pop()}else{if(pg===3)res=-1;pg--}page()};
+$("bk").onclick=function(){stop();show("list")};
+$("cs").onclick=function(){up=!up;$("txt").classList.toggle("up",up)};
+$("fm").onclick=function(){fs=Math.max(1.2,fs-.2);$("txt").style.fontSize=fs+"rem"};
+$("fp").onclick=function(){fs=Math.min(2.6,fs+.2);$("txt").style.fontSize=fs+"rem"};
+$("sp").onclick=function(){rate=rate<.7?.9:.6;$("sp").textContent=rate<.7?"🐢 Lento":"🐇 Normal"};
+$("qz").onclick=function(){stop();qi=0;sc=0;show("quiz");ask()};
+function ask(){var it=ST[si].q[qi];$("qn").textContent="Pregunta "+(qi+1)+" de "+ST[si].q.length;$("qs").textContent=sc+" ⭐";$("fb").textContent="";
+ var q=$("qq");q.textContent=it[0];q.className="q"+(up?" up":"");var o=$("qo");o.innerHTML="";
+ shuf([it[1]].concat(it[2])).forEach(function(t){var b=mk(t);b.className="opt"+(up?" up":"");if(up)b.style.textTransform="uppercase";
+  b.onclick=function(){if(o.dataset.l)return;o.dataset.l=1;
+   if(t===it[1]){_st("lectura",1);sc++;b.classList.add("ok");$("fb").textContent="¡Muy bien! 🎉";beep(660,.15);setTimeout(function(){beep(880,.2)},150)}
+   else{_st("lectura",0);b.classList.add("bad");$("fb").textContent="Casi. Era: "+it[1];Array.prototype.forEach.call(o.children,function(x){if(x.textContent===it[1])x.classList.add("ok")});beep(200,.3)}
+   $("qs").textContent=sc+" ⭐";setTimeout(function(){qi++;if(qi<ST[si].q.length)ask();else end()},1700)};o.appendChild(b)});
+ o.dataset.l="";say(it[0])}
+$("qsay").onclick=function(){say(ST[si].q[qi][0])};
+function end(){show("fin");var N=ST[si].q.length,s=sc===N?3:sc>=N-1?2:1;$("fs").textContent="⭐".repeat(s)+"☆".repeat(3-s);$("ft").textContent=sc+" de "+N;$("fm2").textContent=sc===N?"¡Eres una gran lectora, Itziar!":s===2?"¡Muy bien! Has entendido casi todo.":"Lee el cuento otra vez y lo conseguirás.";
+ [523,659,784,1047].forEach(function(f,i){setTimeout(function(){beep(f,.25)},i*130)});
+ for(var i=0;i<18;i++){var p=document.createElement("div");p.className="pop";p.textContent=["📚","⭐","✨","🎉"][R(4)];p.style.left=(15+R(70))+"vw";p.style.top=(30+R(25))+"vh";p.style.setProperty("--dx",(R(160)-80)+"px");p.style.setProperty("--dy",(R(200)+60)+"px");document.body.appendChild(p);setTimeout(function(x){x.remove()},1300,p)}}
+$("again").onclick=function(){show("list")};
+if(window._LV===0){$("lead").textContent="Toca un cuento para escucharlo. Luego responde tocando los dibujos.";$("cs").textContent="Aa minúsculas"}
+</script></body></html>
