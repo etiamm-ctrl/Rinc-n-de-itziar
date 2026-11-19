@@ -52,7 +52,7 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion:reduce){.fill{transition:none}}
 .inf .qc,.inf .opt{text-transform:uppercase}
 .bigo .opt svg{display:block;margin:0 auto}
-.opt:disabled{opacity:.55}
+.opt:disabled{opacity:.55}.input-answer{display:flex;flex-direction:column;gap:10px;margin-top:14px}.answer-input{width:100%;padding:14px;border:3px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font:inherit;font-size:1.15rem;text-align:center}
 </style>
 </head>
 <body><main>
@@ -61,13 +61,85 @@ button{font:inherit;color:inherit}
 <section id="tema" hidden><div class="bar"><button class="back" id="tbk">⬅️ Temas</button></div><h1 id="ttit"></h1><p class="lead" id="tsub"></p><div class="learn"><h2 id="tlh">📘 Qué vas a aprender <button class="back" id="tsay" aria-label="Escuchar">🔊</button></h2><div id="tlearn"></div></div><div id="tlv"></div><div style="text-align:center"><button class="go g2" id="tgame"></button></div></section>
 <section id="quiz" hidden><div class="bar"><button class="back" id="qbk">Salir</button><div class="track"><div class="fill" id="fill"></div></div><b id="qsc">0 ⭐</b></div><p class="lead" id="qlv" style="margin:0 0 6px"></p><div class="qc" id="qc"></div><div class="opts" id="qo"></div><div class="fb" id="qfb" aria-live="polite"></div></section>
 <section id="end" class="endc" hidden><div class="st" id="efs"></div><h1 id="eft"></h1><p class="lead" id="efm"></p><button class="go g3" id="enx">➡️ Siguiente nivel</button><button class="go" id="erp">🔁 Repetir</button><button class="go g2" id="ebk">📘 Volver al tema</button></section>
+
+<style>
+/* Taller de lectura y escritura · ampliación 6.º */
+#taller{max-width:560px;margin:0 auto;padding:0 14px 36px}
+#taller .work-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin:12px 0}
+#taller .work-card h2{font-size:1.15rem;margin:0 0 8px}
+#taller .work-card p{margin:8px 0}
+#taller .reading-text{font-size:1.02rem;line-height:1.65;text-align:left;white-space:normal}
+#taller label{display:block;font-weight:700;margin:12px 0 5px}
+#taller textarea{width:100%;min-height:94px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);padding:10px;font:inherit;resize:vertical}
+#taller .work-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+#taller .work-status{color:var(--sub);font-size:.92rem}
+#taller .rubric{display:grid;gap:8px;margin:10px 0}
+#taller .rubric label{display:flex;gap:9px;align-items:flex-start;font-weight:500;margin:0}
+#taller .rubric input{width:20px;height:20px;flex:0 0 auto}
+#taller .work-select{width:100%;padding:11px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit}
+#taller .prompt{background:var(--bg);border-left:4px solid var(--c2);padding:10px 12px;border-radius:8px}
+</style>
+<section id="taller" hidden>
+ <div class="bar"><button class="back" id="wback">⬅️ Inicio</button><div class="track"><div class="fill" id="wprogress"></div></div></div>
+ <h1>📚 Taller de lectura y escritura</h1>
+ <p class="lead">Textos narrativos, expositivos y argumentativos, además de lecturas en valencià e inglés y pensamiento crítico digital. Para 6.º de Primaria.</p>
+ <div class="work-card">
+  <h2>🗓️ Propuesta de organización por trimestres</h2>
+  <p class="work-status">Es una guía orientativa para repartir el trabajo; conviene ajustarla a la programación real del colegio.</p>
+  <p><b>1.º trimestre · Consolidar bases:</b> operaciones y cálculo, fracciones y decimales iniciales, comprensión de textos narrativos y expositivos, categorías gramaticales, seres vivos y hábitos saludables, comunicación básica en inglés y valencià.</p>
+  <p><b>2.º trimestre · Aplicar y relacionar:</b> operaciones combinadas, porcentajes y proporcionalidad, sintaxis y textos argumentativos, materia, energía y ecosistemas, lectura y escritura en inglés y valencià.</p>
+  <p><b>3.º trimestre · Razonar y preparar la ESO:</b> problemas de varios pasos, geometría, volumen y estadística, análisis de textos y redacciones completas, historia y geografía, exposiciones orales y repaso de los aprendizajes esenciales.</p>
+  <h2 style="margin-top:14px">🎨 También aprendemos fuera de los libros</h2>
+  <p><b>Plástica:</b> crear una infografía con datos y fuentes, cuidando composición, color y legibilidad.</p>
+  <p><b>Música:</b> reconocer patrones rítmicos, crear una secuencia y explicar cómo cambia el sonido.</p>
+  <p><b>Educación Física:</b> diseñar un calentamiento seguro, registrar actividad y explicar por qué la recuperación es importante.</p>
+  <p><b>Valores:</b> debatir situaciones de convivencia, privacidad digital, respeto y resolución pacífica de conflictos.</p>
+ </div>
+ <div class="work-card">
+  <h2>Elige una actividad</h2>
+  <select class="work-select" id="wselect" aria-label="Selecciona una lectura"></select>
+  <p class="work-status" id="wstatus"></p>
+ </div>
+ <div class="work-card">
+  <h2 id="wtitle"></h2>
+  <p class="work-status" id="wgenre"></p>
+  <div class="reading-text" id="wtext"></div>
+ </div>
+ <div class="work-card">
+  <h2>🔎 Comprueba que has comprendido</h2>
+  <p class="work-status">Responde con tus palabras. No basta con copiar una frase: explica lo que has entendido. En las lecturas de valencià e inglés, intenta responder en esa misma lengua.</p>
+  <div id="wquestions"></div>
+ </div>
+ <div class="work-card">
+  <h2>✍️ Ahora escribe tú</h2>
+  <p class="prompt" id="wprompt"></p>
+  <label for="wwrite">Tu texto</label>
+  <textarea id="wwrite" maxlength="3000" placeholder="Organiza tus ideas en párrafos. Revisa la ortografía antes de terminar."></textarea>
+  <p class="work-status" id="wcount">0 / 3000 caracteres</p>
+  <h2 style="margin-top:14px">✅ Revisa tu trabajo</h2>
+  <div class="rubric" id="wrubric">
+   <label><input type="checkbox" value="idea"> He respondido a lo que se me pedía.</label>
+   <label><input type="checkbox" value="order"> Mis ideas están ordenadas y separadas en párrafos.</label>
+   <label><input type="checkbox" value="connectors"> He utilizado conectores (por ejemplo, además, sin embargo, por eso…).</label>
+   <label><input type="checkbox" value="punctuation"> He revisado mayúsculas, puntos, comas y tildes.</label>
+   <label><input type="checkbox" value="review"> He releído el texto y he corregido lo que podía mejorar.</label>
+  </div>
+  <div class="work-actions">
+   <button class="go g3" id="wsave">💾 Guardar actividad</button>
+   <button class="back" id="wclear">Borrar mis respuestas</button>
+  </div>
+  <p class="work-status" id="wsaved" aria-live="polite">Tus respuestas se guardan en este dispositivo.</p>
+ </div>
+</section>
+
 </main>
 <script>
 
 var R=function(n){return Math.floor(Math.random()*n)},shuf=function(a){return a.map(function(x){return[Math.random(),x]}).sort(function(a,b){return a[0]-b[0]}).map(function(x){return x[1]})};
 function Q(q,a,w,x){a=String(a);w=w.map(String).filter(function(v,i,A){return v!==a&&A.indexOf(v)===i});var o={q:q,a:a,o:shuf([a].concat(shuf(w).slice(0,3)))};if(x)for(var k in x)o[k]=x[k];return o}
 function N(q,a,st,x){st=st||1;var f=function(v){return String(v).replace("-","\u2212")},w=[],D=shuf([1,-1,2,-2,3,-3,10,-10]),i;for(i=0;i<D.length&&w.length<3;i++){var v=a+D[i]*st;if((a<0||v>=0)&&v!==a&&w.indexOf(v)<0)w.push(v)}return Q(q,f(a),w.map(f),x)}
-var BK=[];function B(L){BK.push(L);return function(){var i=L[R(L.length)];return Q(i[0],i[1],i[2],i[3]?{h:i[3]}:null)}}
+var BK=[];function B(L){BK.push(L);return function(){var i=L[R(L.length)],x={};if(i[3])x.h=i[3];if(i[4])x.why=i[4];return Q(i[0],i[1],i[2],Object.keys(x).length?x:null)}}
+function F(q,a,why){return function(){return{q:q,a:String(a),input:true,why:why||""}}}
 function P(){var F=arguments;return function(){return F[R(F.length)]()}}
 function big(t){return'<div style="font-size:2rem;line-height:1.4;word-break:break-word">'+t+'</div>'}
 /* ---- números en letra (0-999) ---- */
@@ -184,7 +256,7 @@ var MEDIO=[
  bk("La rotación de la Tierra produce…|el día y la noche|las estaciones;las mareas solo;los eclipses\nLa traslación dura…|un año|un día;un mes;una semana\nLas estaciones se deben a…|la inclinación del eje y la traslación|la distancia de la Luna;las nubes;el viento\nEl planeta más grande es…|Júpiter|Tierra;Marte;Mercurio\nLas fases de la Luna dependen de…|la parte iluminada que vemos|su tamaño real;su temperatura;las nubes"),
  bk("Un gas que aumenta el efecto invernadero es el…|dióxido de carbono|oxígeno;nitrógeno;helio\nUna consecuencia del cambio climático es…|la subida de temperaturas|menos calor;más glaciares;menos lluvia siempre\nUna energía renovable es la…|solar|del carbón;del petróleo;del gas natural\nSon combustibles fósiles…|petróleo, carbón y gas natural|sol, viento y agua;madera y papel;oro y plata\nPara ayudar al planeta podemos…|reciclar y ahorrar energía|tirar basura;dejar luces encendidas;usar más plástico")]}];
 
-function bk(t){return B(t.split("\n").filter(Boolean).map(function(l){var p=l.split("|");return[p[0],p[1],p[2].split(";")]}))}
+function bk(t){return B(t.split("\n").filter(Boolean).map(function(l){var p=l.split("|");return[p[0],p[1],p[2].split(";"),null,p[3]||""]}))}
 function tp(id,t,n,e,learn,banks,lang){var o={id:id,t:t,n:n,e:e,learn:learn.split("|"),L:banks.map(bk)};if(lang)o.lang=lang;return o}
 var EN=[
 tp("i61",1,"Past simple","⏪","Regular: play → played. Irregular: go → went, eat → ate, see → saw, buy → bought.|Questions: Did you go? → Yes, I did. / No, I didn’t.|Negative: I didn’t eat. (infinitive after didn’t)|To be: I was, you were.",[
@@ -250,6 +322,13 @@ MEDIO.push({id:"e69",t:2,n:"Geografía física de España",e:"⛰️",learn:["Re
  L:[bk("El pico más alto de España es el…|Teide|Mulhacén;Aneto;Everest\nLa montaña que separa España de Francia es…|los Pirineos|los Alpes;Sierra Morena;Sierra Nevada\nLa gran llanura elevada del centro es la…|Meseta Central|depresión del Ebro;Cordillera Cantábrica;costa\nEl Teide está en…|Tenerife|Mallorca;Valencia;Granada\nEl clima de la Comunitat Valenciana es…|mediterráneo|oceánico;continental;de montaña\nEn el clima mediterráneo los veranos son…|calurosos y secos|fríos y lluviosos;fríos y secos;con nieve\nEl Mulhacén está en Sierra…|Nevada|Morena;Central;Cantábrica\nEl río Turia desemboca en el…|Mediterráneo|Atlántico;Cantábrico;Ebro"),
  bk("El río más largo de la península ibérica es el…|Tajo|Ebro;Duero;Júcar\nEl río más caudaloso de España es el…|Ebro|Tajo;Segura;Júcar\nEl Ebro desemboca en el…|Mediterráneo|Atlántico;Cantábrico;Pirineo\nEl Guadalquivir desemboca en el…|Atlántico|Mediterráneo;Cantábrico;Ebro\nEl clima oceánico del norte tiene…|lluvias abundantes y temperaturas suaves|veranos secos;inviernos muy fríos y poca lluvia;calor extremo\nEl clima continental del interior tiene…|inviernos fríos y veranos calurosos|temperaturas suaves todo el año;lluvia todo el año;nieve en verano\nLas islas Canarias están en el océano…|Atlántico|Mediterráneo;Índico;Pacífico\nLas Baleares están en el mar…|Mediterráneo|Cantábrico;Atlántico;Rojo"),
  bk("El Júcar desemboca cerca de…|Cullera|Valencia ciudad;Alicante;Castellón\nLos ríos del Cantábrico son…|cortos y caudalosos|largos y secos;sin agua;subterráneos\nLas depresiones de España son la del Ebro y la del…|Guadalquivir|Tajo;Duero;Pirineo\nSierra Nevada está en…|Andalucía|Galicia;Cataluña;Aragón\nEl Sistema Ibérico limita la Meseta por el…|este|oeste;norte;sur\nUn mapa físico muestra…|el relieve y los ríos|los países y sus capitales;la población;los impuestos\nLa Comunitat Valenciana tiene costa en el mar…|Mediterráneo|Cantábrico;Atlántico;Negro\nLa altitud se mide en…|metros|grados;litros;gramos")]});
+var X3={l61:["En «Mi hermana canta», el sujeto es…|Mi hermana|canta;hermana canta;Mi\nEn «Pablo duerme en su cama», el CC es…|en su cama|Pablo;duerme;su\n«Es simpática» tiene predicado…|nominal|verbal;pasivo;interrogativo","En «Compré pan a María», el CI es…|a María|pan;Compré;ninguno\nEn «Los niños leen cuentos», el CD es…|cuentos|Los niños;leen;ninguno\nEn «Tengo hambre», el CD es…|hambre|Tengo;ninguno;yo","En «Ayer llovió mucho», «ayer» es CC de…|tiempo|lugar;modo;cantidad\nEl núcleo del predicado es…|el verbo|el sujeto;el CD;el adjetivo\nEl sujeto de «Llegaron tarde» es…|ellos (omitido)|tarde;Llegaron;ninguno"],
+l62:["El infinitivo de «saltaban» es…|saltar|saltado;saltando;salto\n«Mañana iré» está en…|futuro|pasado;presente;imperativo\n«Ayer comí» está en…|pasado|futuro;presente;infinitivo","Imperativo de «venir» (tú):|ven|viene;vengas;vendrás\nParticipio de «romper»:|roto|rompido;rompiendo;rompe\n«Hemos cantado» es un tiempo…|compuesto|simple;imperativo;infinitivo","«Ojalá vengas» expresa…|un deseo|un hecho;una orden;una pregunta\nGerundio de «dormir»:|durmiendo|dormiendo;dormido;dormir\nEspero que tú ___ (ser) feliz.|seas|eres;serás;fuiste"],
+l63:["El teatro se escribe en…|diálogos|estrofas;versos siempre;cartas\nUn texto que describe explica…|cómo es algo|qué pasó;qué opina el autor;qué debes hacer\nUn cuento tiene…|personajes|estrofas;actos;versos","«Tus ojos son estrellas» es una…|metáfora|comparación;rima;onomatopeya\nQuien escribe una novela es el…|escritor|narrador;personaje;lector\nUn texto instructivo explica…|cómo hacer algo|qué opinas;cómo es algo;qué pasó","«Guau» es una…|onomatopeya|metáfora;rima;estrofa\nUn narrador en primera persona dice…|yo|él;ellos;tú\nLos versos riman en consonante cuando coinciden…|vocales y consonantes finales|solo la primera letra;en nada;en el título"],
+e61:["El sistema inmunitario…|nos defiende|nos mueve;nos alimenta;nos hace crecer\nHacer ejercicio es…|bueno para la salud|malo;inútil;peligroso siempre\nDormir sirve para…|descansar y crecer|nada;engordar;aburrirse","Las proteínas sirven sobre todo para…|construir y reparar el cuerpo|dar luz;enfriar;medir\nEl agua es…|imprescindible para vivir|opcional;dañina;igual que el azúcar\nUna enfermedad infecciosa la causa un…|microbio|hueso;nutriente;músculo","Las etapas de la vida son…|infancia, adolescencia, madurez y vejez|vejez, madurez e infancia;solo infancia y vejez;adolescencia e infancia\nEl embarazo humano dura unos…|9 meses|3 meses;12 meses;5 años\nLavarse las manos evita…|contagios|el sueño;el hambre;el frío"],
+e62:["El peso es la fuerza de…|la gravedad|el imán;el viento;la luz\nUna bombilla necesita…|electricidad|agua;viento;frío\nUn imán atrae…|metales como el hierro|madera;plástico;papel","Una carretilla es una…|palanca|polea;rampa;rueda\nUn cable de cobre es…|conductor|aislante;imán;pila\nLa energía eólica usa…|el viento|el carbón;el petróleo;el gas","El interruptor sirve para…|abrir o cerrar el circuito|dar luz;gastar pila;medir\nLa energía del Sol se llama…|solar|eólica;hidráulica;nuclear\nFrotar un peine y atraer papelitos es electricidad…|estática|en serie;solar;en paralelo"],
+e63:["Los primeros humanos vivían en…|cuevas|castillos;rascacielos;pisos\nLas pirámides están en…|Egipto|Grecia;Roma;Valencia\nLa Prehistoria termina con la…|escritura|agricultura;rueda;fuego","Los romanos hablaban…|latín|griego;árabe;valenciano\nEl Imperio romano de Occidente cayó en el siglo…|V|X;XV;I\nLos musulmanes llegaron a la península en el año…|711|476;1492;1238","Jaume I conquistó València en…|1238|711;1492;1936\nEl Acueducto de Segovia es una obra…|romana|griega;egipcia;medieval\nUn siervo medieval trabajaba para el…|señor feudal|faraón;emperador romano;rey de Egipto"]};
+[LENGUA,MEDIO].forEach(function(arr){arr.forEach(function(t){var x=X3[t.id];if(x)t.L=t.L.map(function(f,i){return P(f,bk(x[i]))})})});
 var X2={i61:["My brother ___ TV last night.|watched|watch;watches;watching\nPast of «go»:|went|goed;gone;goes\nShe ___ a cake yesterday. (make)|made|maked;makes;making","I ___ my keys yesterday. (lose)|lost|losed;lose;loses\n___ he play tennis yesterday?|Did|Does;Do;Was\nPast of «drink»:|drank|drinked;drunk;drinks","They ___ to the cinema last Saturday.|went|go;goes;going\nWe ___ pizza for dinner.|had|have;has;haves\nI ___ get up early yesterday.|didn’t|don’t;wasn’t;doesn’t"],
 i62:["A car is ___ than a bike. (fast)|faster|fastest;more fast;fastly\nSummer is ___ than winter. (hot)|hotter|hottest;more hot;hoter\nA lion is ___ than a cat. (dangerous)|more dangerous|dangerouser;most dangerous;dangerousest","She is the ___ student. (good)|best|better;goodest;most good\nThis book is ___ than that one. (interesting)|more interesting|interestinger;most interesting;interestingest\nMy house is ___ than yours. (small)|smaller|smallest;more small;smalller","He is the ___ boy in the team. (young)|youngest|younger;most young;more young\nToday is ___ than yesterday. (bad)|worse|worst;badder;more bad\nIt is the ___ beautiful beach.|most|more;much;very"],
 i63:["___ you swim? Yes, I can.|Can|Must;Did;Are\nWe ___ be quiet in class. (rule)|must|can;did;are\nHe ___ ride a bike when he was four.|could|can;must;should","It will ___ tomorrow.|rain|rains;raining;rained\nI’m going to ___ my grandma.|visit|visits;visiting;visited\nYou ___ eat so much chocolate. (advice: no)|shouldn’t|should;must;can","If I study, I ___ pass the exam.|will|would;did;am\nYou ___ talk during the exam. (prohibited)|mustn’t|should;can;will\nWe ___ going to travel next summer.|are|is;will;do"],
@@ -258,14 +337,312 @@ v62:["El futur de «cantar» (ell):|cantarà|cantava;canta;cantat\nA «Els xique
 v63:["La ciutat de les Falles és…|València|Castelló;Alacant;Elx\nEls fallers vesteixen…|el vestit faller|un uniforme militar;roba de bany;un casc\nUn plat típic valencià és…|la paella|el gaspatxo;la fabada;el cocido","Les Corts Valencianes són…|el parlament valencià|un teatre;una escola;un museu\nLa Ciutat de les Arts i les Ciències està a…|València|Alacant;Castelló;Elx\nEl 9 d’Octubre se celebra…|el dia de la Comunitat Valenciana|Nadal;les Falles;Pasqua","Un vers és…|una línia d’un poema|un capítol;una paraula;un títol\nUn poema es divideix en…|estrofes|capítols;paràgrafs;actes\nEl teatre es divideix en…|actes|estrofes;versos;capítols"]};
 [EN,VA].forEach(function(arr){arr.forEach(function(t){var x=X2[t.id];if(x)t.L=t.L.map(function(f,i){return P(f,bk(x[i]))})})});
 [MEDIO].forEach(function(arr){arr.forEach(function(t){var x=X[t.id];if(x)t.L=t.L.map(function(f,i){return P(f,bk(x[i]))})})});
-return{title:"6.º de Primaria",S:[{k:"mates",n:"Matemáticas",e:"🔢",c:"#ff7a59",T:MATES},{k:"lengua",n:"Lengua",e:"📖",c:"#3b82f6",T:LENGUA},{k:"medio",n:"Ciencias",e:"🌱",c:"#1f9d6b",T:MEDIO},{k:"ingles",n:"Inglés",e:"🇬🇧",c:"#8e63d9",T:EN},{k:"valencia",n:"Valencià",e:"🍊",c:"#e8710a",T:VA}]}};
+
+/* ===== AMPLIACIÓN CURRICULAR 6.º: más profundidad y aplicación ===== */
+MATES.push(
+{id:"m610",t:1,n:"Operaciones combinadas y divisibilidad",e:"🧠",learn:["En una operación combinada: primero paréntesis, después multiplicaciones y divisiones, y al final sumas y restas.","Si hay operaciones del mismo nivel, se resuelven de izquierda a derecha.","Un número primo tiene exactamente dos divisores: 1 y él mismo. El 1 no es primo.","Para comprobar divisibilidad: entre 2 termina en cifra par; entre 3, la suma de cifras es múltiplo de 3; entre 5, termina en 0 o 5."],L:[
+ bk(`8 + 3 × 4 =|20|44;32;15|Primero se multiplica: 3 × 4 = 12; después se suma 8.
+(8 + 3) × 4 =|44|20;32;15|Los paréntesis se resuelven antes que la multiplicación.
+36 ÷ 6 + 4 =|10|3;6;12|La división se hace antes que la suma.
+¿Cuál es un número primo?|17|21;27;1|17 solo tiene dos divisores: 1 y 17.
+¿Cuál es divisible entre 3?|123|124;125;127|1 + 2 + 3 = 6, que es múltiplo de 3.`),
+ bk(`18 − 2 × (5 + 1) =|6|16;12;96|Primero 5 + 1 = 6; luego 2 × 6 = 12; finalmente 18 − 12.
+¿Cuál es divisible entre 5?|340|342;343;347|Los números divisibles entre 5 acaban en 0 o 5.
+¿Cuál es un número compuesto?|21|19;13;2|21 tiene más de dos divisores: 1, 3, 7 y 21.
+El m.c.m. de 6 y 8 es…|24|14;48;2|24 es el menor múltiplo que comparten 6 y 8.
+El m.c.d. de 24 y 36 es…|12|6;18;72|12 es el mayor divisor común de ambos números.`),
+ bk(`3² + 4 × 2 =|17|20;14;49|Primero la potencia: 9; después 4 × 2 = 8; total 17.
+¿Cuál es divisible entre 9?|729|724;725;728|7 + 2 + 9 = 18, múltiplo de 9.
+El número 1 es…|ni primo ni compuesto|primo;compuesto;par primo|Solo tiene un divisor positivo.
+Si dos luces parpadean cada 4 y 6 segundos, coinciden cada…|12 segundos|10;24;2|Buscamos el mínimo común múltiplo de 4 y 6.
+¿Cuál es el mayor divisor común de 15 y 25?|5|10;15;25|Los divisores comunes son 1 y 5; el mayor es 5.`) ]},
+{id:"m611",t:2,n:"Fracciones: las cuatro operaciones",e:"🍰",learn:["Para sumar o restar fracciones con distinto denominador, buscamos un denominador común.","Para multiplicar fracciones, multiplicamos numeradores entre sí y denominadores entre sí.","Para dividir fracciones, multiplicamos la primera por la inversa de la segunda.","Simplifica el resultado cuando sea posible y comprueba si la fracción es mayor o menor que 1."],L:[
+ bk(`1/3 + 1/6 =|1/2|2/9;2/6;1/9|1/3 equivale a 2/6; 2/6 + 1/6 = 3/6 = 1/2.
+3/4 − 1/2 =|1/4|2/2;1/2;2/4|1/2 equivale a 2/4; 3/4 − 2/4 = 1/4.
+2/3 × 3/5 =|2/5|6/8;5/2;6/15|Multiplica numeradores y denominadores: 6/15, que se simplifica a 2/5.
+1/2 de 18 es…|9|6;12;18|La mitad de 18 es 18 ÷ 2.
+4/8 simplificada es…|1/2|2/8;1/4;4/4|Dividimos numerador y denominador entre 4.`),
+ bk(`2/5 + 1/10 =|1/2|3/15;3/10;2/10|2/5 = 4/10; 4/10 + 1/10 = 5/10 = 1/2.
+5/6 − 1/3 =|1/2|4/3;4/6;1/3|1/3 = 2/6; 5/6 − 2/6 = 3/6.
+3/4 × 2/3 =|1/2|6/7;5/12;6/12|Multiplicamos: 6/12 y simplificamos a 1/2.
+2/3 ÷ 1/2 =|4/3|1/3;3/4;2/6|Dividir entre 1/2 equivale a multiplicar por 2.
+¿Cuál es mayor?|5/4|3/4;4/5;1/2|5/4 es mayor que 1; las otras fracciones son menores que 1.`),
+ bk(`3/5 ÷ 2/3 =|9/10|6/15;5/6;2/5|Multiplicamos 3/5 por la inversa 3/2: 9/10.
+7/8 − 1/4 =|5/8|6/4;6/8;3/8|1/4 = 2/8; 7/8 − 2/8 = 5/8.
+2/3 de 30 es…|20|15;10;25|30 ÷ 3 = 10 y 10 × 2 = 20.
+1/4 + 2/3 =|11/12|3/7;3/12;10/12|Los denominadores comunes son 12: 3/12 + 8/12.
+¿Cuál equivale a 0,75?|3/4|1/4;7/5;2/5|3 ÷ 4 = 0,75.`) ]},
+{id:"m612",t:2,n:"Álgebra: patrones y ecuaciones",e:"🔣",learn:["Una expresión algebraica utiliza letras para representar números: x + 5.","Para resolver x + 7 = 15, restamos 7 en ambos lados: x = 8.","Para resolver 4x = 28, dividimos ambos lados entre 4: x = 7.","En una secuencia, identifica cuánto aumenta o disminuye cada término y expresa la regla."],L:[
+ bk(`Si x + 5 = 12, x vale…|7|17;6;8|Restamos 5 a los dos lados: x = 12 − 5.
+Si 3x = 21, x vale…|7|18;24;9|Dividimos 21 entre 3.
+La regla de 4, 7, 10, 13… es sumar…|3|2;4;5|Cada término aumenta tres unidades.
+Si n = 6, n + 4 vale…|10|24;2;64|Sustituimos n por 6: 6 + 4.
+¿Qué número falta? 5, 10, 15, __|20|18;25;30|La secuencia aumenta de cinco en cinco.`),
+ bk(`Si x − 8 = 14, x vale…|22|6;18;112|Sumamos 8 a ambos lados.
+Si 5x = 45, x vale…|9|8;40;50|45 dividido entre 5 es 9.
+Si x ÷ 4 = 6, x vale…|24|10;2;20|Multiplicamos 6 por 4.
+Si 2x + 3 = 13, x vale…|5|8;6;10|Restamos 3: 2x = 10; dividimos entre 2.
+La regla de 2, 6, 18, 54… es multiplicar por…|3|2;4;6|Cada término es el triple del anterior.`),
+ bk(`Si 4x − 6 = 18, x vale…|6|3;8;12|Sumamos 6: 4x = 24; dividimos entre 4.
+Un rectángulo mide x y x + 2. Si x = 5, su perímetro es…|24|12;14;20|Lados 5 y 7: 5 + 7 + 5 + 7 = 24.
+Si 3(x + 2) = 21, x vale…|5|7;9;3|Dividimos entre 3: x + 2 = 7; x = 5.
+¿Qué expresión representa el doble de un número menos 4?|2x − 4|x + 2;4x − 2;2(x + 4)|El doble es 2x y después restamos 4.
+La secuencia 1, 4, 9, 16… continúa con…|25|20;24;32|Son cuadrados: 1², 2², 3², 4² y 5².`) ]},
+{id:"m613",t:3,n:"Geometría: áreas, perímetros y volumen",e:"📐",learn:["Perímetro: suma de las longitudes de todos los lados. Área: superficie que ocupa una figura.","Área del triángulo = base × altura ÷ 2. Área del paralelogramo = base × altura.","Área del trapecio = (base mayor + base menor) × altura ÷ 2.","Volumen de un prisma rectangular = largo × ancho × alto. Recuerda las unidades cuadradas y cúbicas."],L:[
+ bk(`Área de un triángulo de base 8 cm y altura 5 cm:|20 cm²|40 cm²;13 cm²;26 cm²|Multiplicamos 8 × 5 y dividimos entre 2.
+Perímetro de un cuadrado de lado 7 cm:|28 cm|49 cm;14 cm;21 cm|Sumamos sus cuatro lados iguales.
+Área de un rectángulo de 9 × 4 cm:|36 cm²|26 cm²;13 cm²;32 cm²|Base por altura: 9 × 4.
+Volumen de una caja de 3 × 4 × 5 cm:|60 cm³|12 cm³;20 cm³;45 cm³|Multiplicamos largo, ancho y alto.
+1 m² equivale a…|10.000 cm²|100 cm²;1.000 cm²;1.000.000 cm²|Un metro son 100 centímetros; al pasar a superficie, 100 × 100.`),
+ bk(`Área de un paralelogramo de base 8 y altura 3:|24|11;22;48|Base por altura: 8 × 3.
+Área de un trapecio con bases 8 y 4 y altura 3:|18|36;12;24|Sumamos las bases, multiplicamos por 3 y dividimos entre 2.
+Perímetro de un rectángulo de 8 × 3 cm:|22 cm|24 cm;11 cm;48 cm|8 + 3 + 8 + 3 = 22.
+Volumen de un cubo de arista 4 cm:|64 cm³|16 cm³;12 cm³;48 cm³|4 × 4 × 4 = 64.
+2,5 m son…|250 cm|25 cm;2.500 cm;0,25 cm|Multiplicamos 2,5 por 100.`),
+ bk(`Un jardín rectangular de 12 m por 8 m tiene un área de…|96 m²|40 m²;20 m²;192 m²|12 × 8 = 96 metros cuadrados.
+Si el perímetro de un cuadrado es 36 cm, su lado mide…|9 cm|6 cm;12 cm;18 cm|Dividimos el perímetro entre cuatro.
+Un prisma de 2 × 3 × 7 cm tiene volumen…|42 cm³|12 cm³;21 cm³;24 cm³|2 × 3 × 7 = 42.
+3,2 litros equivalen a…|3.200 ml|320 ml;32 ml;32.000 ml|Cada litro contiene 1.000 mililitros.
+El área de un círculo de radio 2 cm (π≈3,14) es…|12,56 cm²|6,28 cm²;4 cm²;25,12 cm²|Área = π × radio² = 3,14 × 4.`) ]},
+{id:"m614",t:3,n:"Porcentajes en situaciones reales",e:"🛍️",learn:["Para calcular un porcentaje, multiplica la cantidad por el porcentaje y divide entre 100.","Precio final con descuento = precio inicial − descuento.","Aumento porcentual: calcula el aumento y súmalo al precio inicial.","En problemas de proporcionalidad, comprueba si al duplicar una cantidad también se duplica la otra."],L:[
+ bk(`El 15 % de 200 es…|30|15;20;45|200 × 15 ÷ 100 = 30.
+Un producto de 80 € tiene 25 % de descuento. Descuento:|20 €|25 €;15 €;40 €|80 × 25 ÷ 100 = 20 euros.
+Si 4 cuadernos cuestan 12 €, uno cuesta…|3 €|4 €;8 €;6 €|Dividimos 12 entre 4.
+El 10 % de 350 es…|35|3,5;30;45|Dividimos 350 entre 10.
+Si 5 kg cuestan 15 €, 8 kg cuestan…|24 €|20 €;18 €;30 €|Cada kilo cuesta 3 €; 8 × 3 = 24.`),
+ bk(`Una bici cuesta 240 € y sube un 10 %. Precio nuevo:|264 €|250 €;260 €;280 €|El 10 % son 24 €; 240 + 24 = 264.
+Una chaqueta de 120 € tiene un 30 % de descuento. Pagas…|84 €|90 €;36 €;96 €|El descuento es 36 €; 120 − 36 = 84.
+El 5 % de 600 es…|30|60;5;50|600 × 5 ÷ 100 = 30.
+Si 3 entradas cuestan 27 €, 5 cuestan…|45 €|35 €;54 €;40 €|Una entrada cuesta 9 €; cinco cuestan 45 €.
+Un precio pasa de 50 € a 60 €. El aumento es…|20 %|10 %;15 %;25 %|Sube 10 €; 10 es el 20 % de 50.`),
+ bk(`Un artículo de 150 € tiene un descuento del 20 %. Precio final:|120 €|130 €;30 €;100 €|El descuento son 30 €; 150 − 30 = 120.
+Una factura de 80 € aumenta un 5 %. Nuevo importe:|84 €|85 €;76 €;88 €|El 5 % son 4 €; 80 + 4 = 84.
+El 12 % de 250 es…|30|25;12;35|250 × 12 ÷ 100 = 30.
+Si 6 botellas cuestan 9 €, 10 cuestan…|15 €|12 €;18 €;20 €|Cada botella cuesta 1,50 €; 10 × 1,50 = 15.
+Una compra de 40 € lleva un descuento del 15 %. Se paga…|34 €|35 €;26 €;36 €|El descuento es 6 €; 40 − 6 = 34.`) ]}
+);
+LENGUA.push(
+{id:"l66",t:1,n:"Clases de palabras y formación",e:"🔤",learn:["El sustantivo nombra; el adjetivo expresa cualidades; el determinante acompaña al sustantivo.","El pronombre sustituye al nombre; el verbo expresa acciones o estados; el adverbio modifica al verbo, al adjetivo o a otro adverbio.","Las preposiciones relacionan palabras y las conjunciones unen elementos u oraciones.","Las palabras pueden formarse por derivación (flor → florero) o composición (abre + latas → abrelatas)."],L:[
+ bk(`En «Aquellos perros pequeños ladran», «pequeños» es…|adjetivo|sustantivo;verbo;adverbio|Acompaña al sustantivo perros y expresa una cualidad.
+En «Ella llegó pronto», «ella» es…|pronombre|adjetivo;preposición;verbo|Sustituye al nombre de una persona.
+En «muy lejos», «muy» es…|adverbio|sustantivo;verbo;preposición|Modifica al adverbio lejos.
+¿Cuál es una preposición?|desde|rápido;mesa;cantar|Desde relaciona elementos dentro de la oración.
+«Abrelatas» es una palabra…|compuesta|simple;derivada;primitiva|Se forma uniendo abre y latas.`),
+ bk(`En «Mis tres amigas llegaron», «tres» es…|determinante numeral|verbo;adverbio;preposición|Acompaña al sustantivo e indica cantidad.
+En «Cantábamos», la forma verbal está en…|primera persona del plural|tercera del singular;segunda del plural;infinitivo|La terminación -ábamos indica nosotros o nosotras.
+«Inútil» contiene un…|prefijo|sufijo;diptongo;hiato|In- se coloca delante de la raíz y cambia el significado.
+«Panadería» es una palabra…|derivada|compuesta;simple;onomatopeya|Se forma a partir de pan con sufijos.
+¿Cuál es una conjunción?|aunque|debajo;ayer;azul|Aunque une ideas y expresa contraste.`),
+ bk(`En «La niña que vino es mi prima», «que» es…|pronombre relativo|verbo;adverbio;preposición|Introduce una oración que se refiere a la niña.
+«Deshacer» se forma con…|prefijo|sufijo;composición;onomatopeya|Des- se añade delante de hacer.
+¿Cuál es un adverbio de modo?|cuidadosamente|mañana;allí;muchísimo|Indica cómo se realiza una acción.
+En «El libro azul», «el» es…|determinante artículo|pronombre;verbo;adverbio|Acompaña al sustantivo libro.
+«Sacapuntas» es…|compuesta|derivada;simple;primitiva|Une dos elementos léxicos: saca y puntas.`) ]},
+{id:"l67",t:2,n:"Análisis sintáctico: sujeto y complementos",e:"🧩",learn:["El sujeto concuerda con el verbo en número y persona; puede estar omitido.","El complemento directo (CD) se puede sustituir por lo, la, los o las.","El complemento indirecto (CI) suele poder sustituirse por le o les.","El atributo aparece con ser, estar o parecer. Los complementos circunstanciales indican lugar, tiempo, modo, causa o cantidad."],L:[
+ bk(`En «Marta compró flores», el CD es…|flores|Marta;compró;ninguno|Podemos decir: Marta las compró.
+En «Luis entregó el paquete a Ana», el CI es…|a Ana|el paquete;Luis;entregó|Podemos sustituirlo por le: Luis le entregó el paquete.
+En «Mi hermano está cansado», «cansado» es…|atributo|CD;CI;sujeto|Aparece con el verbo copulativo estar.
+En «Ayer fuimos al museo», «ayer» es…|CC de tiempo|CC de lugar;CD;CI|Indica cuándo ocurrió la acción.
+En «Llegaron temprano», el sujeto es…|ellos (omitido)|temprano;llegaron;ninguno|El verbo está en tercera persona del plural.`),
+ bk(`En «La profesora explicó el tema», el CD es…|el tema|La profesora;explicó;ninguno|La profesora lo explicó.
+En «Escribí una carta a mi abuelo», el CI es…|a mi abuelo|una carta;Escribí;mi|Podemos decir: le escribí una carta.
+En «El patio parece enorme», el atributo es…|enorme|El patio;parece;ninguno|Completa el significado del verbo parecer.
+En «Los niños juegan en el parque», «en el parque» es…|CC de lugar|CD;CI;atributo|Responde a dónde juegan.
+El sujeto de «Me gustan las ciencias» es…|las ciencias|Me;gustan;yo|El verbo concuerda en plural con las ciencias.`),
+ bk(`En «A Paula la llamó su amiga», el sujeto es…|su amiga|A Paula;la;llamó|¿Quién llamó? Su amiga.
+En «El entrenador dio instrucciones a los jugadores», el CD es…|instrucciones|El entrenador;a los jugadores;los jugadores|El entrenador las dio.
+En la misma oración, «a los jugadores» es…|CI|CD;subjecte;atributo|Se puede sustituir por les.
+En «Trabajamos con cuidado», «con cuidado» es…|CC de modo|CD;CI;atributo|Indica cómo trabajamos.
+En «La película fue emocionante», «emocionante» es…|atributo|CD;CI;CC|Acompaña al verbo copulativo fue.`) ]},
+{id:"l68",t:3,n:"Escritura, cohesión y puntuación",e:"✍️",learn:["Un texto claro tiene introducción, desarrollo y cierre, según su finalidad.","Usa conectores variados: en primer lugar, además, sin embargo, por tanto y finalmente.","Separa las ideas en párrafos y evita repetir siempre las mismas palabras.","Revisa la concordancia, las tildes, las mayúsculas y los signos de puntuación antes de entregar un texto."],L:[
+ bk(`¿Qué conector añade información?|además|sin embargo;por tanto;en conclusión|Además introduce otra idea del mismo tema.
+¿Qué signo cierra una pregunta directa?|?|!;.;,|La interrogación directa termina con signo de cierre.
+Un texto argumentativo debe incluir…|una opinión y razones|solo una lista;solo diálogos;solo fechas|Los argumentos justifican la opinión.
+¿Para qué sirve un punto y aparte?|para separar párrafos|para separar sílabas;para indicar una pregunta;para abreviar|Marca el final de un párrafo.
+¿Cuál es una expresión de conclusión?|en definitiva|por ejemplo;en primer lugar;además|En definitiva introduce el cierre de una idea.`),
+ bk(`¿Qué conector expresa contraste?|sin embargo|por eso;además;por ejemplo|Sin embargo presenta una idea opuesta o una dificultad.
+Un resumen debe…|recoger las ideas principales|copiar todo el texto;añadir opiniones nuevas;ser más largo que el original|Resume lo esencial con palabras propias.
+¿Qué opción está puntuada correctamente?|María, ven aquí.|María ven, aquí;María ven aquí;María, ven, aquí.|El vocativo María se separa con coma.
+Una noticia suele responder a…|qué, quién, cuándo, dónde y cómo|solo quién;solo dónde;solo por qué|Son preguntas básicas para organizar la información.
+¿Qué palabra evita repetir «la casa»?|la vivienda|rápidamente;construir;ayer|Vivienda es un sinónimo adecuado en ese contexto.`),
+ bk(`¿Cuál es la mejor estructura para una opinión razonada?|opinión, argumentos y conclusión|título y lista sin explicar;solo conclusión;preguntas sin respuesta|Primero se presenta la postura, después se justifica y se cierra.
+¿Qué oración está mejor cohesionada?|Llovía; por eso, cogimos el paraguas.|Llovía, además no obstante paraguas.;Llovía porque aunque paraguas.;Llovía y por tanto pero.|Por eso expresa una consecuencia lógica.
+Una descripción objetiva…|aporta rasgos verificables|incluye solo emociones;inventa hechos;da órdenes|Busca informar sin introducir valoraciones personales.
+Antes de entregar un texto conviene…|revisar contenido y forma|añadir palabras difíciles;quitar todos los puntos;no releerlo|La revisión mejora claridad, ortografía y coherencia.
+¿Qué recurso ayuda a organizar una exposición?|títulos y apartados|repetir la misma frase;mezclar todos los temas;eliminar conectores|Los apartados permiten localizar y seguir las ideas.`) ]}
+);
+MEDIO.push(
+{id:"e610",t:1,n:"La célula y la organización de los seres vivos",e:"🔬",learn:["La célula es la unidad básica de los seres vivos. Puede ser animal o vegetal.","Partes principales: membrana, citoplasma y material genético; las células vegetales tienen pared celular y cloroplastos.","Las células semejantes pueden formar tejidos; los tejidos forman órganos y los órganos trabajan en aparatos o sistemas.","Los seres vivos se clasifican en grandes grupos o reinos según sus características."],L:[
+ bk(`La unidad básica de los seres vivos es…|la célula|el órgano;el tejido;el aparato|Los seres vivos están formados por una o más células.
+¿Qué estructura controla qué entra y sale de la célula?|membrana|núcleo;citoplasma;pared ósea|La membrana delimita la célula y regula el intercambio.
+¿Qué tienen las células vegetales y no las animales?|pared celular y cloroplastos|pulmones y corazón;huesos;plumas|Los cloroplastos intervienen en la fotosíntesis.
+Un conjunto de células semejantes forma un…|tejido|órgano;aparato;organismo|Las células se organizan para realizar funciones comunes.
+El corazón es un…|órgano|tejido;célula;ecosistema|Está formado por varios tejidos que trabajan juntos.`),
+ bk(`El orden correcto de organización es…|célula, tejido, órgano, aparato|órgano, célula, tejido, aparato;tejido, aparato, célula, órgano;aparato, órgano, tejido, célula|Las células se agrupan en tejidos, estos forman órganos y después aparatos.
+La fotosíntesis ocurre principalmente en…|los cloroplastos|las mitocondrias;el núcleo;la membrana|Los cloroplastos contienen clorofila.
+Los hongos son…|seres vivos|minerales;máquinas;rocas|Los hongos están formados por células y realizan funciones vitales.
+Un organismo unicelular tiene…|una célula|dos tejidos;muchos órganos;ninguna célula|Uni- significa uno.
+El material genético contiene…|información hereditaria|solo agua;oxígeno;nutrientes|El ADN contiene instrucciones para el funcionamiento celular.`),
+ bk(`¿Cuál es un ejemplo de tejido?|tejido muscular|corazón;estómago;sistema digestivo|El músculo está formado por células especializadas.
+Los órganos están formados por…|varios tejidos|solo una molécula;ecosistemas;varios planetas|Los tejidos colaboran para una función concreta.
+Una bacteria suele ser…|unicelular|pluricelular;un órgano;un tejido|La mayoría de las bacterias están formadas por una sola célula.
+La célula vegetal realiza la fotosíntesis gracias a…|los cloroplastos|los huesos;las neuronas;los glóbulos rojos|En ellos se encuentra la clorofila.
+¿Qué afirmación es correcta?|Todos los seres vivos están formados por células.|Solo los animales tienen células.;Las plantas no tienen células.;Las células no realizan funciones vitales.|La teoría celular establece que la célula es la unidad básica de la vida.`) ]},
+{id:"e611",t:2,n:"Materia, mezclas y cambios",e:"⚗️",learn:["La materia tiene masa y ocupa un espacio. La masa se mide en kg y el volumen en litros o m³.","Una sustancia pura tiene composición definida; una mezcla reúne varias sustancias.","Las mezclas pueden ser homogéneas (no distinguimos sus componentes) o heterogéneas (sí los distinguimos).", "Los cambios físicos no crean sustancias nuevas; los químicos transforman unas sustancias en otras."],L:[
+ bk(`La materia tiene…|masa y volumen|solo color;solo temperatura;solo forma|La materia ocupa espacio y tiene masa.
+Una mezcla de agua y sal bien disuelta es…|homogénea|heterogénea;un elemento;un gas|No distinguimos sus componentes a simple vista.
+Agua y aceite forman una mezcla…|heterogénea|homogénea;un compuesto puro;un metal|Se observan dos fases separadas.
+La masa se mide habitualmente en…|kilogramos|litros;metros;grados|El kilogramo es una unidad de masa.
+Derretir hielo es un cambio…|físico|químico;biológico;eléctrico|Sigue siendo agua, aunque cambia de estado.`),
+ bk(`La evaporación es el paso de…|líquido a gas|gas a líquido;sólido a líquido;líquido a sólido|El líquido pasa a estado gaseoso.
+La condensación es…|gas a líquido|líquido a gas;sólido a gas;líquido a sólido|El vapor se enfría y forma líquido.
+Oxidar un clavo es un cambio…|químico|físico;de estado;de forma|Se forma una sustancia nueva: óxido.
+Separar arena y agua puede hacerse mediante…|filtración|imantación;evaporación del metal;congelación del aire|El filtro retiene la arena y deja pasar el agua.
+El volumen de un objeto indica…|el espacio que ocupa|su temperatura;su color;su dureza|El volumen mide el espacio ocupado.`),
+ bk(`Una mezcla homogénea también se llama…|disolución|suspensión;aleación de gases;sedimento|Una disolución tiene composición uniforme.
+Para separar limaduras de hierro y arena usamos…|un imán|un filtro de café;un colador de tela;un termómetro|El hierro es atraído por el imán.
+La combustión de madera es un cambio…|químico|físico;de forma;de tamaño|Se producen sustancias nuevas, como gases y cenizas.
+Si calentamos agua hasta hervir, ocurre…|un cambio de estado|una reacción nuclear;una combustión;una mezcla heterogénea|El agua pasa de líquido a gas.
+La densidad relaciona…|masa y volumen|masa y temperatura;longitud y tiempo;fuerza y color|Densidad = masa dividida entre volumen.`) ]},
+{id:"e612",t:2,n:"Energía, electricidad y tecnología",e:"⚡",learn:["La energía se transforma: una bombilla convierte energía eléctrica en luz y calor.","Fuentes renovables: solar, eólica e hidráulica. No renovables: carbón, petróleo y gas natural.","Un circuito sencillo necesita una fuente, cables y un receptor; el interruptor abre o cierra el circuito.","La tecnología debe diseñarse y utilizarse con seguridad, responsabilidad y respeto por la privacidad."],L:[
+ bk(`Una bombilla transforma energía eléctrica en…|luz y calor|sonido y movimiento;solo frío;energía química|La bombilla emite luz y también desprende calor.
+¿Cuál es una fuente renovable?|viento|carbón;petróleo;gas natural|El viento se renueva de forma natural.
+Un circuito necesita…|una fuente y un camino cerrado|solo una bombilla;solo un imán;un vaso de agua|La corriente circula si el circuito está cerrado.
+El interruptor sirve para…|abrir o cerrar el circuito|crear energía;medir masa;producir agua|Controla el paso de la corriente.
+¿Cuál es un material aislante?|plástico|cobre;hierro;aluminio|El plástico dificulta el paso de la corriente.`),
+ bk(`Una placa solar transforma energía del Sol en…|energía eléctrica|petróleo;carbón;gasolina|Los paneles fotovoltaicos producen electricidad.
+La energía almacenada en una pila es…|química|eólica;sonora;hidráulica|La pila transforma energía química en eléctrica.
+En un circuito en serie, si se interrumpe el camino…|deja de circular corriente|la corriente aumenta;se crea energía;no cambia nada|El circuito queda abierto.
+Una contraseña segura debe ser…|larga y difícil de adivinar|tu fecha de nacimiento;123456;tu nombre|Combina longitud y variedad; no la compartas.
+Una fuente no renovable es…|el petróleo|el Sol;el viento;las mareas|Tarda millones de años en formarse y sus reservas son limitadas.`),
+ bk(`En un circuito en paralelo, los receptores…|tienen caminos independientes|están todos en un único camino;no necesitan cables;producen combustible|Cada rama ofrece un recorrido distinto para la corriente.
+La energía eólica procede de…|el viento|el carbón;el uranio;el gas|Los aerogeneradores aprovechan el movimiento del aire.
+Una medida de seguridad eléctrica es…|no tocar aparatos con las manos mojadas|tirar del cable;abrir enchufes;usar cables pelados|El agua facilita el paso de la corriente y aumenta el riesgo.
+El uso responsable de internet incluye…|proteger los datos personales|publicar contraseñas;abrir cualquier enlace;compartir fotos ajenas sin permiso|La privacidad y el consentimiento son esenciales.
+Una central hidroeléctrica aprovecha…|el movimiento del agua|el calor del carbón;la luz de la Luna;el petróleo|El agua en movimiento acciona turbinas.`) ]},
+{id:"e613",t:3,n:"Población, economía y mapas",e:"🌍",learn:["La población se estudia con datos como natalidad, mortalidad, esperanza de vida y migraciones.","La densidad de población es el número de habitantes dividido entre la superficie en km².","Sectores económicos: primario (obtiene recursos), secundario (transforma materias primas) y terciario (servicios).", "Un mapa temático representa información concreta, como población, clima o actividades económicas."],L:[
+ bk(`La densidad de población se calcula…|habitantes ÷ superficie|superficie ÷ habitantes;habitantes × superficie;habitantes + superficie|Así obtenemos habitantes por kilómetro cuadrado.
+La agricultura pertenece al sector…|primario|secundario;terciario;cuaternario|Obtiene productos directamente de la naturaleza.
+Una fábrica pertenece al sector…|secundario|primario;terciario;doméstico|Transforma materias primas en productos.
+Un hospital pertenece al sector…|terciario|primario;secundario;agrario|Presta un servicio sanitario.
+Un mapa del clima es un mapa…|temático|político;de carreteras;topográfico únicamente|Representa un tema concreto: las condiciones climáticas.`),
+ bk(`Si una ciudad tiene 20.000 habitantes y 100 km², su densidad es…|200 hab/km²|20;2.000;100|20.000 dividido entre 100 es 200.
+La emigración significa…|salir de un lugar para vivir en otro|llegar a un país;viajar de vacaciones;mudarse de habitación|Emigrar es abandonar el lugar de origen.
+La pesca pertenece al sector…|primario|secundario;terciario;industrial|Obtiene recursos del medio natural.
+El turismo pertenece al sector…|terciario|primario;secundario;agrícola|Es una actividad de servicios.
+La leyenda de un mapa sirve para…|explicar los símbolos|medir la temperatura;indicar la fecha;calcular la población|Aclara qué representa cada símbolo o color.`),
+ bk(`Una población envejece cuando…|aumenta el peso de las personas mayores|nacen más bebés que nunca;desaparecen los adultos;no hay migraciones|El porcentaje de personas mayores crece respecto al total.
+La natalidad mide…|los nacimientos|las defunciones;las migraciones;la esperanza de vida|Indica cuántos nacimientos se producen en una población.
+Un mapa político muestra…|fronteras y divisiones territoriales|relieve y altitud;temperaturas;precipitaciones|Representa países, regiones y límites administrativos.
+La escala 1:100.000 significa que 1 cm en el mapa equivale a…|1 km real|100 m;10 km;100 km|100.000 cm equivalen a 1.000 m, es decir, 1 km.
+Una migración interior ocurre…|dentro del mismo país|entre continentes;solo por vacaciones;solo en verano|Se produce entre lugares de un mismo Estado.`) ]}
+);
+EN.push(
+ tp("i66",1,"Present simple and present continuous","⏰","Present simple: routines and facts (I play, she plays).|Present continuous: actions happening now (am/is/are + verb-ing).|Frequency adverbs: always, usually, sometimes, never.|Questions: Do you…? / Does she…? and Are you…?",[
+ "She ___ to school every day.|goes|go;going;is go\nI usually ___ breakfast at seven.|have|has;having;am have\nLook! They ___ football now.|are playing|play;plays;played\n___ he like science?|Does|Do;Is;Are\nWe ___ TV at the moment.|aren’t watching|don’t watch;doesn’t watch;not watching",
+ "My parents ___ in Valencia.|live|lives;living;are live\nHe never ___ late.|arrives|arrive;arriving;is arrive\nListen! The baby ___.|is crying|cries;cry;are crying\n___ you studying now?|Are|Do;Does;Is\nShe ___ usually walk to school.|doesn’t|don’t;isn’t;aren’t",
+ "Water ___ at 100°C.|boils|boil;boiling;is boil\nI ___ my homework right now.|am doing|do;does;did\nThey ___ tennis on Saturdays.|play|plays;playing;are play\nHow often ___ your sister read?|does|do;is;are\nWe ___ lunch at the moment.|are having|have;has;having"
+ ],"en-GB"),
+ tp("i67",2,"Past continuous and past simple","🕰️","Past simple describes a completed action (I watched a film).|Past continuous: was/were + verb-ing (I was reading).|Use while for an action in progress and when for an event that interrupts it.|Questions in past simple: Did + subject + infinitive?",[
+ "I ___ when you called.|was sleeping|slept;am sleeping;sleep\nWhile we ___, it started to rain.|were walking|walked;are walking;walk\nShe ___ her leg yesterday.|hurt|was hurting;hurts;hurting\n___ they visit London last year?|Did|Were;Do;Does\nHe was cooking when the phone ___.|rang|was ringing;rings;ring",
+ "At 8 pm, I ___ dinner.|was having|had;have;am having\nThey ___ the match last Saturday.|won|were winning;win;winning\nWhile Mum was driving, I ___ music.|was listening to|listened to;listen;am listening\nWhat ___ you doing at six?|were|did;are;was\nThe lights went out while we ___.|were studying|studied;study;are studying",
+ "I ___ my keys this morning.|lost|was losing;lose;losing\nWhen I arrived, they ___.|were dancing|danced;are dancing;dance\nShe ___ a book when the bell rang.|was reading|read;reads;is reading\nDid he ___ the email?|send|sent;sending;sends\nWhile the children played, it ___.|was snowing|snowed;snow;is snow"
+ ],"en-GB"),
+ tp("i68",2,"Questions, prepositions and everyday English","❓","Question words: who, what, where, when, why and how.|Prepositions of place: in, on, under, between, next to, behind.|Prepositions of time: at (time), on (day/date), in (month/year/part of day).|Use polite phrases: Could you…? Would you like…?",[
+ "___ do you live? In Valencia.|Where|When;Who;Why\nThe keys are ___ the table.|on|at;between;from\nMy birthday is ___ May.|in|on;at;under\nThe lesson starts ___ nine o’clock.|at|in;on;to\nThe cat is ___ the chair and the sofa.|between|under;at;in",
+ "___ is your favourite subject?|What|Where;When;Who\nThe cinema is ___ to the bank.|next|between;under;behind\nWe have English ___ Monday.|on|in;at;by\nThe shoes are ___ the bed.|under|at;in;on\n___ you help me, please?|Could|Are;Did;Does",
+ "___ did you go yesterday? To the park.|Where|Who;What;How many\nThe school is ___ the library and the park.|between|at;on;in\nI usually study ___ the evening.|in|on;at;under\nThe picture is ___ the wall.|on|in;at;between\nWould you like ___ water?|some|any;many;a few"
+ ],"en-GB"),
+ tp("i69",3,"Reading and writing: everyday communication","✉️","Read for the main idea and look for details in the text.|A short email needs a greeting, a clear message and a closing.|Use connectors such as first, then, because, however and finally.|Check verb tense, word order, spelling and punctuation.",[
+ `Choose the correct sentence.|I went to the museum yesterday.|I go to the museum yesterday.;I goed to the museum yesterday.;I was go to the museum yesterday.|Past simple is needed for a finished action yesterday.
+Choose the correct question.|Where did you stay?|Where you did stay?;Where did you stayed?;Where do you stayed?|After did, use the infinitive without to.
+Which connector gives a reason?|because|however;finally;although|Because introduces a cause.
+An email to a friend can begin…|Hi Alex,|Dear Sir or Madam only;Yours faithfully only;Chapter One|Hi is a suitable informal greeting.
+Which is a polite request?|Could you help me, please?|Give me it now.;You must help.;Help!|Could you…? is a polite way to ask.`,
+ `Choose the correct sentence.|She has lived here for two years.|She have lived here for two years.;She living here for two years.;She has live here for two years.|With she, use has + past participle.
+What does «although» express?|contrast|time;place;quantity|Although introduces an unexpected contrast.
+A closing for an informal email is…|See you soon,|Yours faithfully,;To whom it may concern,;Dear Sir or Madam,|See you soon is a friendly closing.
+Choose the correct word order.|I usually walk to school.|Usually I to school walk.;I walk usually school to.;To school usually I walk always.|Adverbs of frequency usually go before the main verb.
+Which sentence is a suggestion?|Why don’t we visit the museum?|Where is the museum?;I visited the museum.;The museum is closed.|Why don’t we…? proposes an idea.`,
+ `Choose the correct sentence.|If it rains, we will stay inside.|If it will rain, we stay inside.;If rains, we stayed inside.;If it raining, we will stay.|In a first conditional, use present simple after if.
+The main idea of a text is…|the most important message|the longest sentence;the first word;every detail together|It expresses what the whole text is mainly about.
+Which connector shows sequence?|finally|because;however;although|Finally signals the last step.
+A formal email should use…|polite and clear language|slang and emojis only;no greeting;only capital letters|Formal communication uses an appropriate register.
+Before sending a message, you should…|check the recipient and content|share your password;send without reading;include private data unnecessarily|A final check avoids mistakes and protects privacy.`
+ ],"en-GB")
+);
+VA.push(
+ tp("v65",1,"Accentuació i ortografia avançada","🖊️","Les paraules agudes s’accentuen segons les terminacions previstes per la norma.|Les planes s’accentuen quan no acaben en vocal, vocal + s, -en o -in.|Les esdrúixoles sempre porten accent gràfic.|Cal distingir b/v, g/j, tg/tj, s/ss/ç/c i l·l.",[
+ `Quina paraula porta accent?|camió|cami;camio;camión|És aguda i acaba en vocal.
+Quina és esdrúixola?|música|paper;camió;animal|Les esdrúixoles sempre s’accentuen.
+Quina està ben escrita?|il·lusió|ilusió;ill·lusió;il.lusió|S’escriu amb ela geminada: l·l.
+Quina paraula s’escriu amb v?|núvol|núbol;núvol·l;núvolh|La forma normativa és núvol.
+Quina està ben accentuada?|pàgina|pagina;paginà;pàginà|És esdrúixola i porta accent a la primera a.`,
+ `Quina paraula és aguda?|arròs|música;fàcil;ànima|La síl·laba tònica és l’última.
+Quina porta dièresi?|raïm|raim;raím;raim̈|La dièresi indica que la i es pronuncia en una síl·laba separada.
+Quina forma és correcta?|qüestió|questió;cuestió;qüestío|La dièresi sobre la u indica que es pronuncia en qüe.
+Quina està ben escrita?|metge|metje;medge;metgé|La grafia correcta és metge.
+Quina paraula porta ela geminada?|col·legi|colegi;coll·legi;col.legi|S’escriu col·legi amb l·l.`,
+ `Quina paraula és plana i porta accent?|fàcil|cantar;camió;paper|Les planes s’accentuen quan no acaben en les terminacions indicades.
+Quina està ben escrita?|això|aixo;aixó;això́|El pronom demostratiu això porta accent greu.
+Quina paraula porta dièresi?|veïna|veina;veína;veïná|La dièresi marca el hiat entre e i i.
+Quina és la forma correcta?|platja|plaja;plattja;platxa|S’escriu amb tj en aquest mot.
+Quina paraula és esdrúixola?|història|paper;camió;animal|La síl·laba tònica és l’antepenúltima.`
+ ],"ca-ES"),
+ tp("v66",2,"Pronoms febles i funcions sintàctiques","🧩","Els pronoms febles substitueixen complements per evitar repeticions.|El complement directe pot substituir-se per el, la, els, les o en, segons el cas.|El complement indirecte se sol substituir per li o els.|Els pronoms febles s’escriuen davant o darrere del verb segons la forma verbal.",[
+ `A «Veig la pel·lícula», el CD es pot substituir per…|la|li;els;en|La substitueix el complement directe femení singular.
+A «Done el llibre a Pau», el CI es pot substituir per…|li|la;el;en|Li substitueix a Pau, que és el complement indirecte.
+A «Compre pomes», podem dir…|En compre.|Li compre.;Les compre.;El compre.|En pot substituir un CD indeterminat o quantificat.
+A «Les xiquetes canten», el subjecte és…|Les xiquetes|canten;les;xiquetes canten|El subjecte concorda amb el verb en plural.
+A «La casa és gran», «gran» és…|atribut|CD;CI;CC|Completa el verb copulatiu és.`,
+ `A «He vist el teu germà», el CD és…|el teu germà|He;vist;el teu|Podem dir: l’he vist.
+A «Telefona a les amigues», el CI és…|a les amigues|Telefona;les;cap|Podem substituir-lo per els.
+Quin pronom substitueix «la carta»?|la|li;els;en|La carta és CD femení singular.
+A «Els alumnes estudien a casa», «a casa» és…|CC de lloc|CD;CI;atribut|Indica on estudien.
+A «Li porte flors», «li» és…|CI|CD;subjecte;atribut|Indica a qui porte les flors.`,
+ `A «No les he comprades», «les» substitueix…|les coses femenines plurals|un nom masculí singular;una persona singular;un lloc|Les és un pronom de CD femení plural.
+A «Maria parla amb Joan», el subjecte és…|Maria|amb Joan;parla;Joan|Qui parla? Maria.
+A «El meu cosí sembla content», «content» és…|atribut|CD;CI;CC|S’uneix al subjecte amb el verb semblar.
+A «Els done els quaderns», «els» pot ser…|CI|CD;atribut;CC|En aquest context, els indica a qui done els quaderns.
+Quina oració substitueix bé «He comprat les entrades»?|Les he comprades.|Li he comprat.;Els he comprades.;La he comprat.|Les concorda amb el CD femení plural.`
+ ],"ca-ES"),
+ tp("v67",3,"Tipus de text, connectors i expressió escrita","📝","El text narratiu conta fets; el descriptiu explica com és una persona, un lloc o un objecte.|L’expositiu informa i explica; l’argumentatiu defensa una opinió amb raons.|Connectors: en primer lloc, a més, tanmateix, per això i finalment.|Organitza el text en paràgrafs i revisa l’ortografia abans de lliurar-lo.",[
+ `Un text que defensa una opinió és…|argumentatiu|narratiu;descriptiu;instructiu|Presenta una tesi i arguments.
+Quin connector afegeix informació?|a més|tanmateix;per tant;finalment|A més introdueix una altra idea.
+Un text instructiu serveix per a…|explicar com fer alguna cosa|contar una aventura;descriure un paisatge;defensar una opinió|Dona passos o instruccions.
+Què és una estrofa?|un grup de versos|una frase;un capítol;un personatge|Els versos s’agrupen en estrofes.
+Quin connector indica conseqüència?|per això|tanmateix;encara que;mentre|Per això introdueix el resultat o la conseqüència.`,
+ `Un text expositiu té com a finalitat…|informar i explicar|convèncer sempre;fer riure;donar ordres|Presenta informació de manera clara.
+Quin connector expressa contrast?|tanmateix|a més;per tant;finalment|Tanmateix introdueix una idea oposada.
+Un resum ha de…|incloure les idees principals|copiar totes les frases;afegir informació inventada;ser més llarg|El resum selecciona la informació essencial.
+Una notícia ha d’incloure…|informació clara i contrastada|rumors sense comprovar;opinions com si foren fets;només acudits|La notícia informa de fets verificables.
+Quina expressió obri una seqüència?|en primer lloc|per tant;en conclusió;tanmateix|En primer lloc ordena els passos.`,
+ `Quina estructura és adequada per a una opinió?|opinió, arguments i conclusió|llista sense ordre;només una pregunta;conclusió abans de conéixer el tema|Les raons sostenen l’opinió i la conclusió la tanca.
+Quin recurs evita repeticions?|sinònims i pronoms|repetir el mateix nom;eliminar tots els verbs;escriure sense punts|Aporten varietat i cohesió al text.
+Què cal revisar en un text?|coherència, cohesió i ortografia|només la llargària;només el títol;només la primera frase|La revisió afecta el sentit i la correcció.
+Quin connector introdueix una conclusió?|en definitiva|per exemple;en primer lloc;a més|En definitiva tanca el raonament.
+Un paràgraf desenvolupa…|una idea principal|totes les idees sense relació;només una paraula;una llista de lletres|Cada paràgraf ha de tindre unitat temàtica.`
+ ],"ca-ES")
+);
+
+/* Respuestas escritas: práctica de procedimiento, no solo reconocimiento. */
+var _m612=MATES.filter(function(t){return t.id==="m612"})[0];
+if(_m612){_m612.L[1]=P(_m612.L[1],F("Resuelve la ecuación: 2x + 5 = 17. Escribe el valor de x.","6","Resta 5 a ambos lados y divide entre 2."));_m612.L[2]=P(_m612.L[2],F("Resuelve: 3(x + 2) = 24. ¿Cuánto vale x?","6","Divide entre 3 y después resta 2."))}
+var _m611=MATES.filter(function(t){return t.id==="m611"})[0];
+if(_m611)_m611.L[2]=P(_m611.L[2],F("Calcula 3/4 ÷ 1/2. Escribe la fracción simplificada.","3/2","Multiplica 3/4 por la inversa de 1/2: 3/4 × 2/1."));
+var _m613=MATES.filter(function(t){return t.id==="m613"})[0];
+if(_m613)_m613.L[2]=P(_m613.L[2],F("Un prisma mide 4 cm × 3 cm × 5 cm. ¿Cuál es su volumen en cm³?","60","Multiplica las tres dimensiones: 4 × 3 × 5."));
+var _m614=MATES.filter(function(t){return t.id==="m614"})[0];
+if(_m614)_m614.L[2]=P(_m614.L[2],F("Un artículo cuesta 80 €. Tiene un 25 % de descuento. ¿Cuánto pagas en euros?","60","El descuento es 20 €; resta 20 a 80."));
+
+return{title:"6.º de Primaria",S:[{k:"mates",n:"Matemáticas",e:"🔢",c:"#ff7a59",T:MATES},{k:"lengua",n:"Lengua",e:"📖",c:"#3b82f6",T:LENGUA},{k:"medio",n:"Conocimiento del Medio",e:"🌱",c:"#1f9d6b",T:MEDIO},{k:"ingles",n:"Inglés",e:"🇬🇧",c:"#8e63d9",T:EN},{k:"valencia",n:"Valencià",e:"🍊",c:"#e8710a",T:VA}]}};
 
 var LVL=(typeof window._LV==="number")?window._LV:6,DF=DATA[LVL],D=DF?DF():null,SUBJ=D?D.S:[],INF=!!(D&&D.inf),SKEY="curso"+LVL;
 if(INF)document.body.classList.add("inf");
-var TN=["","1.er trimestre","2.º trimestre","3.er trimestre"],TQ=INF?5:6,PASS=4,LVN=INF?["3 años","4 años","5 años"]:["Fácil","Medio","Reto"],EDI=0;try{EDI=(+localStorage.getItem("edadInf")||5)-2}catch(e){EDI=3}
+var TN=["","1.er trimestre","2.º trimestre","3.er trimestre"],TQ=INF?5:8,PASS=6,LVN=INF?["3 años","4 años","5 años"]:["Fácil","Medio","Reto"],EDI=0;try{EDI=(+localStorage.getItem("edadInf")||5)-2}catch(e){EDI=3}
 var $=function(i){return document.getElementById(i)};
 var mo=new Date().getMonth()+1,TRI=mo>=9?1:mo<=3?2:3,SU=null,TE=null,LV=0,QS=[],qi=0,pts=0,lock=false,AC=null;
-function LS(){try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return{}}}
+function LS(){try{var o=JSON.parse(localStorage.getItem(SKEY)||"{}");if(!o.__assessmentV2){Object.keys(o).forEach(function(k){if(k==="__assessmentV2"||!o[k]||typeof o[k]!=="object")return;[1,2,3].forEach(function(l){if(typeof o[k][l]==="number")o[k][l]=Math.ceil(o[k][l]*8/6)})});o.__assessmentV2=1;localStorage.setItem(SKEY,JSON.stringify(o))}return o}catch(e){return{}}}
 function SS(o){try{localStorage.setItem(SKEY,JSON.stringify(o))}catch(e){}}
 function best(id,l){var o=LS()[id];return o&&o[l]||0}
 function passed(id,l){return best(id,l)>=PASS}
@@ -312,13 +689,13 @@ function next(){if(qi>=TQ)return end();lock=false;var q=QS[qi];$("fill").style.w
  var sp=el("button","spk2","🔊");sp.setAttribute("aria-label","Escuchar la pregunta");sp.onclick=function(){if(q.play)q.play();else if(INF&&!q.auto)say(q.say||q.q.replace(/<[^>]+>/g,""),"es-ES");else if(q.h&&q.auto)say(q.say,q.lang);else say(q.h?c.textContent:q.q,q.lang&&!q.sayAfter?q.lang:"es-ES")};c.appendChild(sp);
  Array.prototype.forEach.call(c.querySelectorAll("[data-say]"),function(b){b.onclick=function(){if(q.play)q.play();else say(q.say,q.lang)}});
  if(q.play){if(INF)say(q.say,"es-ES");setTimeout(q.play,INF?2600:400)}else if(q.auto)setTimeout(function(){say(q.say,q.lang)},350);else if(INF)setTimeout(function(){say(q.say||q.q,"es-ES")},300);
- var o=$("qo");o.innerHTML="";var sh=q.o.every(function(x){return!/[A-Za-zÁÉÍÓÚáéíóúñÑ0-9]{2,}/.test(x)&&Array.from(x).length<=6});o.className="opts"+(q.big||q.oh||sh?" bigo":"");
+ var o=$("qo");o.innerHTML="";if(q.input){o.className="input-answer";var inp=el("input","answer-input");inp.type="text";inp.autocomplete="off";inp.setAttribute("aria-label","Escribe tu respuesta");inp.placeholder="Escribe tu respuesta…";var check=el("button","go g3","Comprobar");check.onclick=function(){if(!inp.value.trim()){$("qfb").textContent="Escribe una respuesta antes de comprobar.";inp.focus();return}answer(check,inp.value.trim(),q)};inp.addEventListener("keydown",function(ev){if(ev.key==="Enter")check.click()});o.appendChild(inp);o.appendChild(check);inp.focus();return}var sh=q.o.every(function(x){return!/[A-Za-zÁÉÍÓÚáéíóúñÑ0-9]{2,}/.test(x)&&Array.from(x).length<=6});o.className="opts"+(q.big||q.oh||sh?" bigo":"");
  q.o.forEach(function(x){var b=el("button","opt");if(q.oh&&q.oh[x]){b.innerHTML=q.oh[x];b.setAttribute("aria-label",x)}else b.textContent=x;b.onclick=function(){answer(b,x,q)};o.appendChild(b)})}
-function answer(b,x,q){if(lock||b.disabled)return;var ok=x===q.a;if(!q._t){q._t=1;try{window._lv&&_lv(TE.id,ok)}catch(e){}}
+function answer(b,x,q){if(lock||b.disabled)return;var norm=function(v){return String(v).trim().toLowerCase().replace(/\s+/g,"").replace(",",".")};var ok=q.input?norm(x)===norm(q.a):x===q.a;if(!q._t){q._t=1;try{window._lv&&_lv(TE.id,ok)}catch(e){}}
  if(INF&&!ok){q._err=1;b.classList.add("bad");b.disabled=true;$("qfb").textContent="¡Casi! Prueba otra vez";beep(200,.3,"triangle");say("Prueba otra vez","es-ES");return}
  lock=true;if(INF&&q._err)ok=false;
  if(ok||(INF&&x===q.a)){if(ok)pts++;b.classList.add("ok");if(INF&&!ok)$("qfb").textContent="¡Muy bien! 🎉";else $("qfb").textContent=["¡Muy bien! 🎉","¡Genial! 👏","¡Perfecto! 🌟"][R(3)];if(INF)say("¡Muy bien!","es-ES");beep(660,.15);setTimeout(function(){beep(880,.2)},150)}
- else{b.classList.add("bad");Array.prototype.forEach.call($("qo").children,function(y){if(y.textContent===q.a)y.classList.add("ok")});$("qfb").textContent="¡Buen intento! Era: "+q.a;beep(200,.35,"triangle")}
+ else{b.classList.add("bad");Array.prototype.forEach.call($("qo").children,function(y){if(y.textContent===q.a)y.classList.add("ok")});$("qfb").textContent="¡Buen intento! Era: "+q.a+(q.why?". "+q.why:"");beep(200,.35,"triangle")}
  $("qsc").textContent=pts+" ⭐";if(q.sayAfter&&q.say)say(q.say,q.lang);qi++;setTimeout(next,ok?1300:2300)}
 
 
@@ -801,4 +1178,209 @@ var _en7=end;end=function(){_en7();try{if(INF||!TE||TE.id==="pi")return;
  var m=document.getElementById("me");if(m){m.classList.remove("jump");void m.offsetWidth;m.classList.add("jump")}
  [523,659,784,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,.18)},700+i*110)})}catch(e){}};
 })();
-</script></body></html>
+</script><script>
+(function(){
+"use strict";
+var activities=[
+ {id:"w1",title:"La última biblioteca del barrio",genre:"Texto narrativo · comprensión inferencial y opinión",text:"Cuando anunciaron que la biblioteca del barrio iba a cerrar durante tres meses por las obras, muchas personas pensaron que tendrían que dejar de leer. A Nora, que tenía once años, se le ocurrió una idea: pedir prestado un carrito de la compra y convertirlo en una pequeña biblioteca ambulante.\\n\\nEl primer sábado colocó en el carrito veinte libros que su familia ya había leído. Su abuelo escribió unas tarjetas para apuntar quién se llevaba cada ejemplar y cuándo debía devolverlo. Al principio se acercaron pocas personas. Algunas miraban los libros con desconfianza; otras decían que preferían leer en una pantalla.\\n\\nNora no se rindió. Cada semana llevaba el carrito a una plaza diferente y preguntaba a los vecinos qué historias les gustaría encontrar. Una mujer mayor pidió novelas de misterio; un niño buscaba libros de animales; y una pareja que acababa de llegar al barrio quería cuentos en varios idiomas para sus hijos. Poco a poco, el carrito empezó a llenarse de libros donados y de lectores que se conocían entre sí.\\n\\nAl terminar las obras, la biblioteca organizó una fiesta para agradecer la iniciativa. Nora devolvió el carrito, pero propuso mantener un pequeño estante de intercambio en la entrada. La bibliotecaria aceptó. Nora comprendió que una biblioteca no es solamente un edificio lleno de libros: también es una comunidad que comparte historias.",questions:["¿Por qué pensaron algunos vecinos que tendrían que dejar de leer?","Explica dos decisiones de Nora que ayudaron a que la biblioteca ambulante funcionara.","¿Qué significa en este texto que algunas personas miraban los libros «con desconfianza»?","¿Qué idea importante transmite el último párrafo? Justifica tu respuesta con un detalle del texto."],prompt:"Escribe una noticia breve (entre 120 y 160 palabras) para la web del colegio contando la iniciativa de Nora. Incluye un titular, qué ocurrió, quién participó, dónde y por qué fue importante."},
+ {id:"w2",title:"¿Adónde va el agua cuando llueve?",genre:"Texto expositivo · causa, consecuencia y vocabulario científico",text:"En una ciudad, la lluvia no sigue siempre el mismo camino. Cuando cae sobre un parque o un jardín, una parte se infiltra en el suelo y puede llegar a las aguas subterráneas. Las raíces de las plantas absorben otra parte, y una pequeña cantidad vuelve a la atmósfera mediante la evaporación y la transpiración.\\n\\nEn cambio, cuando llueve sobre una acera asfaltada o una carretera, el agua tiene más dificultades para penetrar en la tierra. Entonces circula por la superficie y entra en los desagües. Si llueve muy deprisa o los desagües están obstruidos por hojas y residuos, el agua puede acumularse y provocar inundaciones.\\n\\nPor eso, muchas ciudades están creando soluciones para aprovechar mejor el agua de lluvia: jardines que absorben el agua, pavimentos permeables y depósitos que la almacenan para regar. Estas medidas no eliminan todos los riesgos, pero pueden reducir la cantidad de agua que circula de golpe por las calles.\\n\\nCuidar el recorrido del agua también depende de los habitantes. No tirar basura al suelo, mantener limpios los espacios comunes y respetar las zonas verdes son acciones sencillas que ayudan a que la ciudad esté mejor preparada cuando llueve.",questions:["Explica con tus palabras la diferencia entre lo que ocurre con la lluvia en un jardín y en una carretera.","¿Por qué una lluvia intensa puede causar inundaciones en una ciudad? Da dos causas que aparecen en el texto.","En el texto, ¿qué significa «pavimento permeable»? Dedúcelo por el contexto.","Propón un título alternativo y resume la idea principal en dos frases."],prompt:"Redacta un texto expositivo (entre 120 y 160 palabras) para explicar tres medidas que podría tomar tu colegio para aprovechar el agua y evitar que se desperdicie. Explica cómo funcionaría cada medida."},
+ {id:"w3",title:"¿Deberían tener deberes todos los días?",genre:"Texto argumentativo · distinguir opinión y argumentos",text:"En muchas familias, la hora de los deberes se convierte en un momento complicado. Algunos alumnos llegan a casa cansados después de las clases y de las actividades de la tarde. Otros consideran que practicar un poco cada día les ayuda a recordar lo aprendido. Por eso, no existe una única opinión sobre si deberían mandarse deberes todos los días.\\n\\nQuienes están a favor explican que los ejercicios breves permiten practicar operaciones, leer con frecuencia y aprender a organizar el tiempo. También pueden ayudar a detectar qué contenidos necesitan un repaso. Sin embargo, para que sean útiles, deben tener una finalidad clara y poder realizarse sin que una persona adulta tenga que resolverlos.\\n\\nQuienes prefieren limitar los deberes recuerdan que los niños necesitan tiempo para jugar, hacer deporte, descansar y convivir con su familia. Además, no todos disponen en casa del mismo espacio, tiempo o ayuda. Una tarea muy larga puede aumentar las diferencias entre alumnos en lugar de ayudarles.\\n\\nQuizá la cuestión no sea elegir entre muchos deberes o ninguno, sino pensar qué actividades merecen la pena. Leer un rato, terminar una tarea pendiente o preparar una exposición puede ser útil si se adapta a la edad y no ocupa todo el tiempo libre. Lo importante es que el aprendizaje continúe sin olvidar que descansar también forma parte de crecer.",questions:["¿Qué dos razones presenta el texto a favor de los deberes?","¿Qué desigualdad puede provocar una tarea muy larga?","Localiza una expresión que introduce una idea contraria o un matiz. ¿Qué función cumple?","¿Cuál es la postura final del texto? ¿Es una opinión extrema o busca un equilibrio? Explica por qué."],prompt:"Escribe un texto argumentativo (entre 140 y 180 palabras) sobre esta pregunta: «¿Debería haber un día a la semana sin deberes?». Expón tu opinión, aporta al menos dos argumentos, incluye una objeción y termina con una conclusión."},
+ {id:"w4",title:"El pati que volíem",genre:"Valencià · comprensió lectora i proposta",text:"Quan l'escola va preguntar a l'alumnat com milloraria el pati, cada classe va presentar una idea diferent. Alguns xiquets volien més porteries; altres demanaven una zona tranquil·la per a llegir o parlar. També hi havia qui proposava plantar arbres per tindre més ombra durant els dies de calor.\n\nLa classe de sisé va decidir no votar de seguida. Primer va observar el pati durant una setmana i va anotar quins espais s'utilitzaven més i quins quedaven buits. Després va fer una enquesta a altres cursos. Els resultats van mostrar que moltes persones volien jugar a pilota, però també necessitaven llocs on descansar sense tant de soroll.\n\nAmb les dades, van preparar un plànol amb tres zones: una per als jocs de moviment, una altra amb bancs i jocs de taula, i una tercera amb plantes i ombra. Van explicar que caldria repartir els espais i respectar els torns perquè totes les persones pogueren gaudir-ne.\n\nLa direcció va acceptar estudiar la proposta. Encara no hi havia cap canvi construït, però l'alumnat havia descobert que escoltar, observar i argumentar ajuda a trobar solucions compartides.",questions:["Quines tres necessitats diferents apareixen en el text?","Per què la classe va observar el pati abans de votar?","Què van descobrir amb l'enquesta?","Explica per què la proposta encara no es podia considerar una solució definitiva."],prompt:"Escriu en valencià una proposta (entre 100 i 140 paraules) per millorar un espai de l'escola. Explica el problema, presenta dues mesures i justifica com beneficiaran diferents companys i companyes."},
+ {id:"w5",title:"A school garden",genre:"English · reading comprehension (A2)",text:"Last spring, our class decided to create a small garden behind the school. At first, we wanted to plant flowers, but our science teacher suggested growing vegetables too. We made a list of everything we needed: seeds, soil, small tools and a watering can.\n\nEvery Friday, two students looked after the garden. They checked the soil, removed weeds and watered the plants when necessary. We learned that plants need sunlight, water and healthy soil, but they do not all need the same amount of water.\n\nAfter a few weeks, we saw the first green leaves. Some plants grew quickly, while others needed more time. A strong wind damaged two young plants, so we built a simple fence to protect them. In June, we collected our first tomatoes and shared them with the school kitchen.\n\nThe garden taught us more than how to grow food. We learned to work as a team, be patient and take responsibility. Next year, we would like to add a rainwater tank and invite younger students to help.",questions:["When did the class start the garden?","What jobs did the students do every Friday?","Why did they build a fence?","What two new ideas do they have for next year?"],prompt:"Write a short email in English (80–100 words) to a friend. Describe a project you did at school, explain what you learned and say what you would like to do next. Use past simple verbs and at least three time or sequence expressions."},
+ {id:"w6",title:"Una noticia no siempre cuenta toda la historia",genre:"Competencia digital · distinguir hechos, opiniones y fuentes",text:"Un lunes por la mañana empezó a circular por los grupos de mensajería una imagen que aseguraba que el colegio cerraría durante una semana. El mensaje no indicaba quién lo había escrito ni incluía un enlace a una comunicación oficial. En pocas horas, varias familias lo habían reenviado.\n\nUna alumna decidió comprobarlo antes de compartirlo. Buscó en la página oficial del centro y no encontró ningún aviso. Después preguntó a su tutor, que explicó que no había ninguna decisión de cierre. La imagen era antigua y correspondía a otro colegio de otra localidad.\n\nEl caso permitió hablar en clase sobre cómo reconocer información fiable. La fecha, el autor, el lugar al que se refiere la noticia y la fuente original son pistas importantes. También conviene comparar la información con otras fuentes fiables y desconfiar de los mensajes que piden reenviar algo urgentemente.\n\nCompartir una noticia falsa puede causar preocupación y confusión, aunque quien la difunda no tenga mala intención. Antes de reenviar un mensaje, es mejor detenerse, comprobarlo y pensar a quién puede afectar.",questions:["¿Qué detalles hacían sospechoso el primer mensaje?","¿Qué pasos siguió la alumna para comprobarlo?","¿Por qué la imagen parecía auténtica aunque no lo fuera?","Escribe dos preguntas que te harías antes de reenviar una noticia."],prompt:"Redacta una guía breve (entre 120 y 150 palabras) titulada «Antes de compartir, comprueba». Incluye cinco pasos para verificar una noticia y un ejemplo de por qué es importante hacerlo."}
+];
+var $=function(id){return document.getElementById(id)},KEY="curso6TallerEscritura",current=0;
+function getSaved(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return{}}}
+function setSaved(x){try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function progress(){var s=getSaved(),n=activities.filter(function(a){return !!s[a.id]}).length;$("wprogress").style.width=(n/activities.length*100)+"%";$("wstatus").textContent=n+" de "+activities.length+" actividades guardadas."}
+function render(){
+ var a=activities[current],s=getSaved()[a.id]||{};
+ $("wselect").value=a.id;$("wtitle").textContent=a.title;$("wgenre").textContent=a.genre;
+ $("wtext").innerHTML=a.text.split(/\n\n/).map(function(p){return "<p>"+esc(p)+"</p>"}).join("");
+ $("wquestions").innerHTML=a.questions.map(function(q,i){return '<label for="wq'+i+'">'+(i+1)+". "+esc(q)+'</label><textarea id="wq'+i+'" maxlength="1200" placeholder="Explica tu respuesta...">'+esc((s.answers||[])[i]||"")+'</textarea>'}).join("");
+ $("wprompt").textContent=a.prompt;$("wwrite").value=s.write||"";
+ var checks=$("wrubric").querySelectorAll("input");checks.forEach(function(c){c.checked=!!(s.checks&&s.checks.indexOf(c.value)>=0)});
+ count();$("wsaved").textContent=s.saved?"Actividad guardada. Puedes volver y mejorarla cuando quieras.":"Tus respuestas se guardan en este dispositivo.";progress();
+}
+function count(){$("wcount").textContent=$("wwrite").value.length+" / 3000 caracteres"}
+function save(){
+ var a=activities[current],answers=a.questions.map(function(q,i){return $("wq"+i).value.trim()}),write=$("wwrite").value.trim(),checks=[];
+ $("wrubric").querySelectorAll("input:checked").forEach(function(c){checks.push(c.value)});
+ if(answers.some(function(x){return x.length<12})||write.length<80){$("wsaved").textContent="Antes de guardar, desarrolla las cuatro respuestas y escribe al menos 80 caracteres en tu texto. No hace falta que esté perfecto: puedes revisarlo después.";return}
+ var s=getSaved();s[a.id]={answers:answers,write:write,checks:checks,saved:true,date:new Date().toISOString()};setSaved(s);
+ $("wsaved").textContent="¡Actividad guardada! Has completado la lectura y tu primera versión de escritura. Revísala con la lista de comprobación.";progress();
+}
+function clear(){var s=getSaved();delete s[activities[current].id];setSaved(s);render();$("wsaved").textContent="Se han borrado las respuestas de esta actividad."}
+function open(){ $("home").hidden=true;document.getElementById("subj").hidden=true;document.getElementById("tema").hidden=true;document.getElementById("quiz").hidden=true;document.getElementById("end").hidden=true;$("taller").hidden=false;window.scrollTo(0,0);render()}
+function back(){ $("taller").hidden=true;home()}
+activities.forEach(function(a){var o=document.createElement("option");o.value=a.id;o.textContent=a.title;$("wselect").appendChild(o)});
+$("wselect").addEventListener("change",function(){current=activities.findIndex(function(a){return a.id===this.value}.bind(this));if(current<0)current=0;render()});
+$("wwrite").addEventListener("input",count);$("wsave").addEventListener("click",save);$("wclear").addEventListener("click",clear);$("wback").addEventListener("click",back);
+var b=document.createElement("button");b.className="go g2";b.type="button";b.style.cssText="display:block;width:100%;margin:14px 0";b.textContent="📚 Taller de lectura y escritura";b.addEventListener("click",open);$("home").appendChild(b);
+})();
+</script>
+
+
+<script>
+/* ===== FASE 4 · evaluación por asignaturas e informe de escritura ===== */
+(function(){
+"use strict";
+var EXKEY="curso6ExamenesAsignatura", read=function(){try{return JSON.parse(localStorage.getItem(EXKEY)||"{}")}catch(e){return{}}}, write=function(o){try{localStorage.setItem(EXKEY,JSON.stringify(o))}catch(e){}};
+var slug=function(s){return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"")};
+function examFor(subject){
+ var topics=subject.T||[];if(!topics.length)return;
+ TQ=10;SU=subject;
+ var gen=function(){var t=topics[Math.floor(Math.random()*topics.length)],q=t.L[Math.floor(Math.random()*3)]();q._t=t.id;return q};
+ TE={id:"exsub_"+slug(subject.k||subject.n),t:1,n:"Evaluación · "+subject.n,e:"📝",learn:["Prueba de repaso con preguntas variadas de todos los temas de esta asignatura.","Lee con calma y piensa antes de responder.","Al terminar, revisa el informe en la Zona de padres."],L:[gen,gen,gen]};
+ LV=1;start();
+}
+var oldEnd=end;
+end=function(){oldEnd();try{if(TE&&String(TE.id).indexOf("exsub_")===0){var k=TE.id,all=read(),s=SUBJ.filter(function(x){return "exsub_"+slug(x.k||x.n)===k})[0];all[k]=all[k]||{subject:s?s.n:TE.n,attempts:[]};all[k].attempts.unshift({score:pts,total:TQ,date:new Date().toISOString()});all[k].attempts=all[k].attempts.slice(0,10);write(all)}}catch(e){}};
+function report(parent){
+ var h=document.createElement("h2");h.className="ph";h.textContent="📊 Evaluación por asignaturas";parent.appendChild(h);
+ var intro=document.createElement("p");intro.className="prow";intro.textContent="Prepara una prueba de 10 preguntas de cada asignatura. El resultado se guarda en este dispositivo y permite observar la evolución; no sustituye las evaluaciones del colegio.";parent.appendChild(intro);
+ var data=read();
+ SUBJ.forEach(function(s){var k="exsub_"+slug(s.k||s.n),r=data[k],last=r&&r.attempts&&r.attempts[0],card=document.createElement("div");card.className="prow";card.style.cssText="display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:space-between";
+  var label=document.createElement("div");label.style.flex="1 1 180px";var b=document.createElement("b");b.textContent=s.e+" "+s.n;label.appendChild(b);var sm=document.createElement("div");sm.style.cssText="font-size:.9rem;color:var(--sub);margin-top:3px";sm.textContent=last?"Último resultado: "+last.score+"/"+last.total+" · "+new Date(last.date).toLocaleDateString():"Todavía sin evaluación";label.appendChild(sm);card.appendChild(label);
+  var go=document.createElement("button");go.className="back";go.textContent="Hacer prueba";go.onclick=function(){examFor(s)};card.appendChild(go);parent.appendChild(card);
+ });
+ var attempts=[];Object.keys(data).forEach(function(k){(data[k].attempts||[]).forEach(function(a){attempts.push({subject:data[k].subject,score:a.score,total:a.total,date:a.date})})});
+ if(attempts.length){var sum=document.createElement("div");sum.className="work-card";sum.style.marginTop="12px";var title=document.createElement("h3");title.textContent="Últimos resultados";sum.appendChild(title);
+  attempts.sort(function(a,b){return new Date(b.date)-new Date(a.date)}).slice(0,12).forEach(function(a){var p=document.createElement("p");p.style.margin="7px 0";var pct=Math.round(a.score/a.total*100),level=pct>=80?"Aprendizaje consolidado":pct>=60?"En progreso":"Conviene reforzar";p.textContent=a.subject+" · "+a.score+"/"+a.total+" («"+level+"») · "+new Date(a.date).toLocaleDateString();sum.appendChild(p)});parent.appendChild(sum);
+ }
+}
+var oldParents=padresBody;
+padresBody=function(b){oldParents(b);report(b)};
+/* Asesor de escritura orientativo: observa rasgos formales, no califica el contenido. */
+var coach=document.createElement("div");coach.className="work-card";coach.id="wcoach";coach.innerHTML='<h2>🧭 Guía para mejorar tu redacción</h2><p class="work-status">Esta ayuda revisa algunos aspectos formales. No pone nota ni decide si tus ideas son correctas: léela como una lista de pistas.</p><div id="wcoachbody" aria-live="polite"></div>';
+var area=document.getElementById("wwrite");if(area){area.parentNode.insertBefore(coach,area.parentNode.querySelector(".work-actions"));}
+function coachUpdate(){var a=document.getElementById("wwrite"),out=document.getElementById("wcoachbody");if(!a||!out)return;var t=a.value.trim(),words=t?t.split(/\s+/).filter(Boolean):[],paras=t?t.split(/\n\s*\n/).filter(function(x){return x.trim()}):[],sent=t?t.split(/[.!?]+/).filter(function(x){return x.trim()}):[],low=t.toLowerCase(),connectors=["además","sin embargo","por eso","por tanto","en primer lugar","finalmente","because","however","also","first","then","finalment","a més","però","per tant"],found=connectors.filter(function(x){return low.indexOf(x)>=0});
+ var promptText=(document.getElementById("wprompt")||{}).textContent||"",min=80,max=160;var m=promptText.match(/(\d{2,3})\s*(?:y|-)\s*(\d{2,3})\s*palabras/i);if(m){min=+m[1];max=+m[2]}else if(/80.?100/.test(promptText)){min=80;max=100}
+ var items=[];items.push(words.length<min?"Amplía el texto: llevas "+words.length+" palabras; la actividad propone aproximadamente "+min+"–"+max+".":words.length>max?"Has superado la extensión orientativa ("+words.length+" palabras). Comprueba que todas las frases aportan información.":"Extensión: "+words.length+" palabras, dentro del objetivo orientativo.");
+ items.push(paras.length<2?"Separa las ideas en párrafos para facilitar la lectura.":"Estructura: has creado "+paras.length+" párrafos.");
+ items.push(sent.length<3?"Desarrolla las ideas con varias frases completas.":"Se distinguen aproximadamente "+sent.length+" frases.");
+ items.push(found.length?"Conectores detectados: "+found.slice(0,5).join(", ")+".":"Prueba a enlazar las ideas con conectores como «además», «sin embargo» o «por eso».");
+ items.push(/[.!?]$/.test(t)?"El texto termina con un signo de puntuación.":"Revisa el final del texto: añade un punto o el signo que corresponda.");
+ out.innerHTML="<ul style='margin:6px 0;padding-left:22px'>"+items.map(function(x){return"<li style='margin:6px 0'>"+x.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})+"</li>"}).join("")+"</ul>";
+}
+if(area){area.addEventListener("input",coachUpdate);var selector=document.getElementById("wselect");if(selector)selector.addEventListener("change",function(){setTimeout(coachUpdate,0)});coachUpdate()}
+})();
+</script>
+
+
+<style>
+/* FASE 5 · retos de razonamiento y evaluación explicada */
+#retos{max-width:560px;margin:0 auto;padding:0 14px 40px}
+#retos .r-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;margin:12px 0}
+#retos .r-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#retos .r-pick,#retos .r-answer{border:2px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:12px;text-align:left;font:inherit;cursor:pointer}
+#retos .r-pick b{display:block;font-size:1.02rem}
+#retos .r-pick small{color:var(--sub)}
+#retos .r-answer{width:100%;margin:5px 0;text-align:left}
+#retos .r-answer:disabled{opacity:1;cursor:default}
+#retos .r-answer.correct{border-color:var(--ok);background:var(--okbg)}
+#retos .r-answer.wrong{border-color:var(--bad);background:var(--badbg)}
+#retos .r-question{font-size:1.2rem;font-weight:700;line-height:1.45}
+#retos .r-explain{background:var(--bg);border-left:4px solid var(--ok);border-radius:8px;padding:10px 12px;margin:12px 0}
+#retos .r-muted{color:var(--sub);font-size:.92rem}
+#retos .r-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+#retos .r-progress{height:10px;background:var(--line);border-radius:10px;overflow:hidden;margin:10px 0}
+#retos .r-progress i{display:block;height:100%;width:0;background:var(--c3)}
+@media(max-width:360px){#retos .r-grid{grid-template-columns:1fr}}
+</style>
+<section id="retos" hidden>
+ <div class="bar"><button class="back" id="rhome">⬅️ Inicio</button><div class="track"><div class="fill" id="rfill"></div></div><b id="rscore">0/0</b></div>
+ <h1>🧠 Retos para pensar</h1>
+ <p class="lead">Problemas y preguntas de 6.º de Primaria. No basta con acertar: después de cada respuesta podrás leer por qué es correcta.</p>
+ <div id="rchoose" class="r-card">
+  <h2>Elige una asignatura</h2>
+  <p class="r-muted">Cada reto contiene seis preguntas. Puedes repetirlas para mejorar tu resultado.</p>
+  <div class="r-grid" id="rsubjects"></div>
+  <div class="r-card" style="margin-top:14px">
+   <b>Últimos resultados</b><div id="rhistory" class="r-muted" style="margin-top:7px">Todavía no hay resultados guardados.</div>
+  </div>
+ </div>
+ <div id="rplay" hidden>
+  <p class="r-muted" id="rlabel"></p><div class="r-progress"><i id="rbar"></i></div>
+  <div class="r-card">
+   <div class="r-question" id="rquestion"></div>
+   <div id="ranswers" style="margin-top:12px"></div>
+   <div id="rfeedback" aria-live="polite"></div>
+   <div class="r-actions"><button class="go g3" id="rnext" hidden>Siguiente pregunta ➜</button></div>
+  </div>
+ </div>
+ <div id="rfinish" class="r-card" hidden>
+  <h2 id="rfinishTitle">¡Reto terminado!</h2><p id="rfinishText"></p><div id="rfinishAdvice" class="r-explain"></div>
+  <div class="r-actions"><button class="go" id="ragain">Repetir reto</button><button class="go g2" id="rback">Elegir otra asignatura</button></div>
+ </div>
+</section>
+
+<script>
+/* ===== FASE 5 · banco de retos razonados para 6.º ===== */
+(function(){
+"use strict";
+var data={
+ mates:{name:"Matemáticas",emoji:"🔢",q:[
+ ["Una mochila cuesta 48 €. Tiene un descuento del 25 %. ¿Cuánto se paga? ",["12 €","24 €","36 €","42 €"],2,"El 25 % de 48 es 12. Restamos el descuento: 48 − 12 = 36 €. También puede calcularse que se paga el 75 %: 0,75 × 48 = 36."],
+ ["Una excursión recorre 3/4 de un camino de 20 km. ¿Cuántos kilómetros faltan?",["5 km","10 km","15 km","17 km"],0,"Si se recorren 3/4, falta 1/4. La cuarta parte de 20 es 20 ÷ 4 = 5 km."],
+ ["Un depósito contiene 2,4 litros. Se añaden 750 ml. ¿Cuánto contiene ahora?",["2,475 l","3,15 l","9,9 l","3,4 l"],1,"750 ml equivalen a 0,75 litros. Sumamos 2,4 + 0,75 = 3,15 litros."],
+ ["Un rectángulo mide 12 cm de largo y 7 cm de ancho. ¿Cuál es su área y su perímetro?",["84 cm² y 38 cm","84 cm² y 19 cm","38 cm² y 84 cm","19 cm² y 38 cm"],0,"Área = largo × ancho = 12 × 7 = 84 cm². Perímetro = 12 + 7 + 12 + 7 = 38 cm."],
+ ["En una clase, 12 de 30 alumnos van andando. ¿Qué porcentaje representan?",["12 %","30 %","40 %","60 %"],2,"12 ÷ 30 = 0,4. Multiplicamos por 100: 40 %."],
+ ["Un autobús sale a las 9:35 y tarda 1 h 48 min. ¿A qué hora llega?",["10:73","11:13","11:23","12:13"],2,"De 9:35 a 10:35 pasa una hora; 48 minutos más son las 11:23."]
+ ]},
+ lengua:{name:"Lengua",emoji:"📖",q:[
+ ["En «Aunque llovía, salimos al patio», ¿qué relación expresa «aunque»?",["Causa","Oposición o concesión","Tiempo","Finalidad"],1,"«Aunque» introduce una dificultad que no impide que ocurra lo principal. Es una relación concesiva."],
+ ["¿Cuál es el sujeto de «Ayer llegaron tarde los trenes de cercanías»?",["Ayer","llegaron tarde","los trenes de cercanías","de cercanías"],2,"El núcleo del sujeto es «trenes». Podemos comprobarlo cambiando el número: «llegó tarde el tren»."],
+ ["¿Qué oración está escrita correctamente?",["Haber si vienes mañana.","A ver si vienes mañana.","Aver si vienes mañana.","Ha ver si vienes mañana."],1,"«A ver» se usa para expresar expectativa o comprobar algo. «Haber» es un verbo."],
+ ["En una noticia, ¿qué información responde principalmente a «¿cuándo?»",["El lugar","El momento","La causa","Los protagonistas"],1,"Las preguntas básicas de una noticia son qué, quién, cuándo, dónde, cómo y por qué."],
+ ["¿Cuál es el conector más adecuado para introducir una conclusión?",["Por ejemplo","Sin embargo","En conclusión","Mientras tanto"],2,"«En conclusión» anuncia el cierre y resume la idea principal del texto."],
+ ["¿Qué caracteriza a una metáfora?",["Compara usando siempre «como»","Identifica un elemento con otro por semejanza","Repite sonidos iniciales","Exagera una cantidad"],1,"La metáfora identifica un elemento con otro por una semejanza, sin necesidad de usar «como»."]
+ ]},
+ medio:{name:"Conocimiento del Medio",emoji:"🌱",q:[
+ ["En una cadena alimentaria, ¿qué ocurriría probablemente si desaparecieran muchos insectos polinizadores?",["Aumentarían todas las plantas","Algunas plantas producirían menos frutos y semillas","No cambiaría ningún ecosistema","Desaparecerían todos los descomponedores"],1,"Muchas plantas dependen de animales polinizadores para reproducirse. Su disminución puede afectar a frutos, semillas y a los animales que se alimentan de ellos."],
+ ["¿Qué cambio de estado ocurre cuando el vapor de agua forma gotitas?",["Fusión","Evaporación","Condensación","Solidificación"],2,"La condensación sucede cuando un gas se enfría y pasa a estado líquido, como el vapor que forma gotas en un cristal frío."],
+ ["¿Cuál es una fuente de energía renovable?",["Carbón","Petróleo","Gas natural","Viento"],3,"El viento se renueva de forma natural y se utiliza para producir electricidad mediante aerogeneradores."],
+ ["¿Qué órgano bombea la sangre por el cuerpo?",["Pulmón","Corazón","Estómago","Riñón"],1,"El corazón se contrae y envía la sangre por los vasos sanguíneos para transportar oxígeno y nutrientes."],
+ ["¿Por qué se suceden el día y la noche?",["Por la traslación de la Luna","Por la rotación de la Tierra","Porque el Sol gira alrededor de la Tierra","Por las estaciones"],1,"La Tierra gira sobre su eje aproximadamente cada 24 horas. La zona orientada al Sol tiene día y la opuesta, noche."],
+ ["Una población de conejos aumenta mucho y consume casi toda la hierba. ¿Qué factor puede limitar después su crecimiento?",["La falta de alimento","El aumento de luz solar","La rotación terrestre","La evaporación del agua"],0,"Los recursos de un ecosistema son limitados. Si escasea el alimento, aumenta la competencia y la población puede dejar de crecer."]
+ ]},
+ ingles:{name:"Inglés",emoji:"🇬🇧",q:[
+ ["Choose the correct sentence: «Ella lleva viviendo aquí desde 2020». ",["She lives here since 2020.","She has lived here since 2020.","She is live here since 2020.","She lived here for 2020."],1,"Use the present perfect with «since» to connect a situation that began in the past and continues now: «has lived»."],
+ ["Complete: «If it rains tomorrow, we ___ at home».",["stay","stayed","will stay","staying"],2,"For a likely future condition, use present simple after «if» and «will» in the result: If it rains, we will stay."],
+ ["What does «careful» mean?",["Ruidoso","Cuidadoso","Hambriento","Temprano"],1,"«Careful» means taking care to avoid mistakes or danger: cuidadoso/a."],
+ ["Choose the correct question.",["How long have you been here?","How long you have been here?","How long are you here since?","How many time have you here?"],0,"In questions with the present perfect, the order is question word + have/has + subject + past participle."],
+ ["Complete: «There isn't ___ milk left».",["many","a few","much","several"],2,"«Milk» is uncountable, so we use «much» in negative sentences: There isn't much milk left."],
+ ["What is the best reply to «Would you mind opening the window?»",["Yes, I would mind.","Not at all.","I am opening yesterday.","No, I don't can."],1,"«Not at all» is a polite way to say that you do not mind doing it."]
+ ]},
+ valencia:{name:"Valencià",emoji:"🍊",q:[
+ ["En «Demà anirem al museu», quin tipus de paraula és «demà»?",["Substantiu","Adverbi de temps","Adjectiu","Preposició"],1,"«Demà» és un adverbi de temps perquè indica quan tindrà lloc l'acció."],
+ ["Quina forma està ben escrita?",["a vore","haver si","a veure","aver"],2,"«A veure» és la forma adequada en expressions com «A veure què passa»."],
+ ["Quin connector expressa una conseqüència?",["Tanmateix","Perquè","Per tant","Abans"],2,"«Per tant» introdueix una conseqüència o conclusió derivada de la informació anterior."],
+ ["En «Les xiquetes han preparat l'exposició», quin és el nucli del predicat?",["xiquetes","han preparat","l'exposició","les"],1,"El predicat és «han preparat l'exposició» i el seu nucli verbal és «han preparat»."],
+ ["Quina paraula és un sinònim de «valent»?",["Covard","Atrevit","Distret","Feble"],1,"«Atrevit» pot funcionar com a sinònim de «valent», segons el context."],
+ ["Quina frase té la puntuació correcta?",["Mare puc eixir a jugar","Mare, puc eixir a jugar?","Mare puc, eixir a jugar.","Mare? puc eixir, a jugar"],1,"La coma separa el vocatiu «Mare» i el signe d'interrogació tanca la pregunta."]
+ ]}
+};
+var root=document.getElementById("retos"),choose=document.getElementById("rchoose"),play=document.getElementById("rplay"),finish=document.getElementById("rfinish");
+var subject=null,questions=[],index=0,score=0,answered=false,storeKey="curso6RetosHistorial";
+function read(){try{return JSON.parse(localStorage.getItem(storeKey)||"{}")}catch(e){return{}}}
+function save(x){try{localStorage.setItem(storeKey,JSON.stringify(x))}catch(e){}}
+function el(id){return document.getElementById(id)}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function open(){["home","subj","tema","quiz","end","taller"].forEach(function(id){var n=el(id);if(n)n.hidden=true});root.hidden=false;choose.hidden=false;play.hidden=true;finish.hidden=true;history()}
+function home(){root.hidden=true;if(typeof window.home==="function")window.home();else el("home").hidden=false}
+function history(){var h=read(),items=Object.keys(data).filter(function(k){return h[k]}).map(function(k){return data[k].emoji+" "+data[k].name+": "+h[k].score+"/"+h[k].total+" · "+new Date(h[k].date).toLocaleDateString()});el("rhistory").textContent=items.length?items.join(" | "):"Todavía no hay resultados guardados."}
+function init(){var box=el("rsubjects");Object.keys(data).forEach(function(k){var d=data[k],b=document.createElement("button");b.className="r-pick";b.innerHTML="<b>"+d.emoji+" "+escapeHtml(d.name)+"</b><small>6 retos · razonamiento</small>";b.addEventListener("click",function(){start(k)});box.appendChild(b)})}
+function start(k){subject=k;questions=data[k].q.slice().sort(function(){return Math.random()-.5});index=0;score=0;choose.hidden=true;finish.hidden=true;play.hidden=false;render()}
+function render(){var q=questions[index];answered=false;el("rlabel").textContent=data[subject].emoji+" "+data[subject].name+" · Pregunta "+(index+1)+" de "+questions.length;el("rbar").style.width=(index/questions.length*100)+"%";el("rscore").textContent=score+"/"+index;el("rquestion").textContent=q[0];el("rfeedback").innerHTML="";el("rnext").hidden=true;var box=el("ranswers");box.innerHTML="";q[1].forEach(function(a,i){var b=document.createElement("button");b.className="r-answer";b.textContent=String.fromCharCode(65+i)+". "+a;b.addEventListener("click",function(){answer(i)});box.appendChild(b)})}
+function answer(i){if(answered)return;answered=true;var q=questions[index],ok=i===q[2];if(ok)score++;Array.prototype.forEach.call(el("ranswers").children,function(b,j){b.disabled=true;if(j===q[2])b.classList.add("correct");else if(j===i)b.classList.add("wrong")});el("rscore").textContent=score+"/"+(index+1);el("rfeedback").innerHTML='<div class="r-explain"><b>'+(ok?"¡Correcto!":"Vamos a aprender del error")+'</b><p>'+escapeHtml(q[3])+'</p></div>';el("rnext").hidden=false;el("rnext").textContent=index===questions.length-1?"Ver resultado":"Siguiente pregunta ➜";el("rbar").style.width=((index+1)/questions.length*100)+"%"}
+function next(){if(index<questions.length-1){index++;render()}else done()}
+function done(){play.hidden=true;finish.hidden=false;el("rfinishTitle").textContent=score===6?"¡Excelente trabajo!":score>=4?"¡Buen progreso!":"¡A seguir practicando!";el("rfinishText").textContent="Has conseguido "+score+" de "+questions.length+" aciertos ("+Math.round(score/questions.length*100)+" %).";el("rfinishAdvice").textContent=score>=5?"Has demostrado un buen dominio de estos retos. Prueba otra asignatura o repite para afianzar.":score>=3?"Vas avanzando. Lee las explicaciones de las preguntas y vuelve a intentarlo dentro de unos días.":"Te recomendamos repasar las explicaciones y practicar los temas relacionados antes de repetir el reto.";var h=read();h[subject]={score:score,total:questions.length,date:new Date().toISOString()};save(h);history()}
+el("rhome").addEventListener("click",home);el("rnext").addEventListener("click",next);el("ragain").addEventListener("click",function(){start(subject)});el("rback").addEventListener("click",function(){finish.hidden=true;choose.hidden=false;history()});
+var b=document.createElement("button");b.className="go g3";b.type="button";b.style.cssText="display:block;width:100%;margin:12px 0";b.textContent="🧠 Retos de razonamiento";b.addEventListener("click",open);el("home").appendChild(b);
+init();
+})();
+</script>
+
+</body></html>
